@@ -14,8 +14,8 @@ class Pendulum:
         self.mass = mass
         self.space = space
 
-        # Create pivot point (static body)
-        self.pivot_body = pymunk.Body(body_type=pymunk.Body.STATIC)
+        # Create pivot point (dynamic body for movement)
+        self.pivot_body = pymunk.Body(body_type=pymunk.Body.KINEMATIC)
         self.pivot_body.position = base_position
 
         # Create pendulum bob (dynamic body)
@@ -31,9 +31,11 @@ class Pendulum:
         self.bob_shape.mass = mass
 
         # Create joint
-        self.joint = pymunk.PinJoint(self.pivot_body, self.bob_body, (0, 0), (0, 0))
+        self.joint = pymunk.PinJoint(
+            self.pivot_body, self.bob_body, (0, 0), (0, 0))
 
         # Add to space
+        self.space.add(self.pivot_body, self.pivot_shape)
         self.space.add(self.bob_body, self.bob_shape, self.joint)
 
     def draw(self, screen):
@@ -91,6 +93,16 @@ class Renderer:
         if keys[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit()
+
+        # Handle left/right movement
+        move_speed = 200  # pixels per second
+        velocity = 0
+        if keys[pygame.K_a]:
+            velocity = -move_speed
+        if keys[pygame.K_d]:
+            velocity = move_speed
+
+        self.pendulum.pivot_body.velocity = (velocity, 0)
 
 
 def main():
