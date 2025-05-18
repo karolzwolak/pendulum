@@ -13,6 +13,9 @@ class Pendulum:
         self.base_position = base_position
         self.mass_position = mass_position
 
+    def move_base(self, dx, dy):
+        self.base_position = (self.base_position[0] + dx, self.base_position[1] + dy)
+
     def draw(self, screen):
         pygame.draw.circle(
             screen,
@@ -44,19 +47,31 @@ class Renderer:
         self.pendulum.draw(self.screen)
         pygame.display.flip()
 
-    def render(self):
-        self.update()
-        self.draw()
-
     def loop(self):
         pygame.init()
-        pygame.time.set_timer(pygame.USEREVENT, 1000 // 60)  # 60 FPS
+        clock = pygame.time.Clock()
+        _ = clock.tick(60)
         while True:
+            self.handle_input()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            self.render()
+            self.draw()
+
+    def handle_input(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            self.pendulum.move_base(0, -1)
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            self.pendulum.move_base(0, 1)
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            self.pendulum.move_base(-1, 0)
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            self.pendulum.move_base(1, 0)
+        if keys[pygame.K_ESCAPE]:
+            pygame.quit()
+            sys.exit()
 
 
 def main():
