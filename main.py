@@ -1,32 +1,52 @@
 import pygame
 import sys
+import pymunk
+import pymunk.pygame_util
 
 PENDULUM_MASS_COLOR = (255, 0, 0)
 PENDULUM_BASE_COLOR = (0, 0, 255)
+GRAVITY = (0, 981)  # pixels per second squared
 
 
 class Pendulum:
-    def __init__(self, length, angle, mass, base_position, mass_position):
+    def __init__(self, length, angle, mass, base_position, space):
         self.length = length
-        self.angle = angle
         self.mass = mass
-        self.base_position = base_position
-        self.mass_position = mass_position
+        self.space = space
 
-    def move_base(self, dx, dy):
-        self.base_position = (self.base_position[0] + dx, self.base_position[1] + dy)
+        # Create pivot point (static body)
+        self.pivot_body = pymunk.Body(body_type=pymunk.Body.STATIC)
+        self.pivot_body.position = base_position
+
+        # Create pendulum bob (dynamic body)
+        self.bob_body = pymunk.Body()
+        self.bob_body.position = (
+            base_position[0] + length * pymunk.Vec2d(1, 0).rotated(angle).x,
+            base_position[1] + length * pymunk.Vec2d(1, 0).rotated(angle).y,
+        )
+
+        # Create shapes
+        self.pivot_shape = pymunk.Circle(self.pivot_body, mass)
+        self.bob_shape = pymunk.Circle(self.bob_body, mass)
+        self.bob_shape.mass = mass
+
+        # Create joint
+        self.joint = pymunk.PinJoint(self.pivot_body, self.bob_body, (0, 0), (0, 0))
+
+        # Add to space
+        self.space.add(self.bob_body, self.bob_shape, self.joint)
 
     def draw(self, screen):
         pygame.draw.circle(
             screen,
             PENDULUM_BASE_COLOR,
-            (int(self.base_position[0]), int(self.base_position[1])),
+            (int(self.pivot_body.position.x), int(self.pivot_body.position.y)),
             self.mass,
         )
         pygame.draw.circle(
             screen,
             PENDULUM_MASS_COLOR,
-            (int(self.mass_position[0]), int(self.mass_position[1])),
+            (int(self.bob_body.position.x), int(self.bob_body.position.y)),
             self.mass,
         )
 
@@ -35,40 +55,39 @@ class Renderer:
     def __init__(self, screen, pendulum):
         self.screen = screen
         self.pendulum = pendulum
+        self.space = pendulum.space
+        self.space.gravity = GRAVITY
+        self.draw_options = pymunk.pygame_util.DrawOptions(screen)
+        self.clock = pygame.time.Clock()
 
     def clear(self):
         self.screen.fill((255, 255, 255))
 
     def update(self):
-        pass
+        dt = 1.0 / 60.0
+        self.space.step(dt)
 
     def draw(self):
         self.clear()
+        # Draw physics objects
+        self.space.debug_draw(self.draw_options)
+        # Also draw our custom pendulum graphics
         self.pendulum.draw(self.screen)
         pygame.display.flip()
 
     def loop(self):
-        pygame.init()
-        clock = pygame.time.Clock()
-        _ = clock.tick(60)
         while True:
             self.handle_input()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+            self.update()
             self.draw()
+            self.clock.tick(60)
 
     def handle_input(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
-            self.pendulum.move_base(0, -1)
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            self.pendulum.move_base(0, 1)
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.pendulum.move_base(-1, 0)
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self.pendulum.move_base(1, 0)
         if keys[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit()
@@ -78,7 +97,11 @@ def main():
     pygame.init()
     play_surface = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("Pendulum Simulation")
-    pendulum = Pendulum(100, 45, 10, (400, 300), (400, 100))
+
+    # Create physics space
+    space = pymunk.Space()
+
+    pendulum = Pendulum(200, 3.14 / 4, 10, (400, 200), space)
     renderer = Renderer(play_surface, pendulum)
     renderer.loop()
 
