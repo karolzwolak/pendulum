@@ -7,10 +7,11 @@ import numpy as np
 import gymnasium as gym
 from copy import deepcopy
 
+WIDTH = 800
+HEIGHT = 600
 PENDULUM_MASS_COLOR = (255, 0, 0)
 PENDULUM_BASE_COLOR = (0, 0, 255)
 GRAVITY = (0, 981)  # pixels per second squared
-TRACK_LEN = 20
 
 
 class Pendulum:
@@ -78,9 +79,11 @@ class CartPoleSimulation:
     def angular_velocity(self):
         return self.pendulum.bob_body.angular_velocity
 
-    # TODO: transform the x position to be equal 0 at the center
     def cart_x(self):
-        return self.pendulum.pivot_body.position.x
+        world_x = self.pendulum.pivot_body.position.x
+        local_x = world_x - WIDTH / 2
+        normized_x = local_x / (WIDTH / 2)
+        return normized_x
 
     def cart_velocity_x(self):
         return self.pendulum.pivot_body.velocity.x
@@ -109,7 +112,7 @@ class CartPoleSimulation:
         return upright_bonus + position_penalty + velocity_penalty + 1.0
 
     def is_done(self):
-        return abs(self.cart_x()) > TRACK_LEN or self.steps >= self.max_steps
+        return abs(self.cart_x()) > 1.0 or self.steps >= self.max_steps
 
     def step(self, force):
         self.steps += 1
@@ -194,7 +197,7 @@ class Renderer:
 
 def main():
     pygame.init()
-    play_surface = pygame.display.set_mode((800, 600))
+    play_surface = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Pendulum Simulation")
 
     # Create physics space
