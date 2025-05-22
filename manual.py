@@ -12,13 +12,10 @@ class ManualRenderer(Renderer):
         super().handle_input()
         keys = pygame.key.get_pressed()
 
-        dir = 0
-        if keys[pygame.K_a]:
-            dir = -1
-        if keys[pygame.K_d]:
-            dir = 1
-
-        self.sim.manually_move(dir)
+        if keys[pygame.K_LEFT]:
+            self.sim.apply_force(-1)
+        if keys[pygame.K_RIGHT]:
+            self.sim.apply_force(1)
 
 
 def main():
