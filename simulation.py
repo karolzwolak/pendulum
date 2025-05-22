@@ -48,6 +48,8 @@ class Simulation:
     def reset(self):
         self.steps = 0
 
+        return self.state()
+
     def is_done(self):
         return abs(self.cart_x()) > WORLD_SIZE or self.steps >= self.max_steps
 
