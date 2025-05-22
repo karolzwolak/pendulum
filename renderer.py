@@ -36,13 +36,27 @@ class Renderer:
         self.sim.draw(self.draw_options)
         pygame.display.flip()
 
-    def loop(self):
+    def clock_tick(self):
+        self.clock.tick(self.sim.frequency)
+
+    def exit(self):
+        pygame.quit()
+        sys.exit()
+
+    def handle_input(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.exit()
+
+    def render(self):
+        self.handle_input()
+        self.update()
+        self.draw()
+        self.clock_tick()
+
+    def run(self):
         while True:
-            self.handle_input()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-            self.update()
-            self.draw()
-            self.clock.tick(self.sim.frequency)
+            self.render()

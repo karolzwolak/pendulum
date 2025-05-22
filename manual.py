@@ -9,10 +9,8 @@ class ManualRenderer(Renderer):
         super().__init__(sim)
 
     def handle_input(self):
+        super().handle_input()
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_ESCAPE]:
-            pygame.quit()
-            sys.exit()
 
         dir = 0
         if keys[pygame.K_a]:
@@ -25,7 +23,7 @@ class ManualRenderer(Renderer):
 
 def main():
     renderer = ManualRenderer(CartPoleSimulation())
-    renderer.loop()
+    renderer.run()
 
 
 if __name__ == "__main__":
