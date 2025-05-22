@@ -2,14 +2,11 @@ import numpy as np
 from simulation import Simulation
 import pymunk
 
-STARTING_ANGLE = 3.14 / 4
-
 
 class CartPoleSimulation(Simulation):
     def __init__(
         self,
         arm_length=15,
-        starting_angle=STARTING_ANGLE,
         weigth_mass=1,
         cart_mass=1,
     ):
@@ -17,7 +14,6 @@ class CartPoleSimulation(Simulation):
         self.obs_size = 4  # [angle, angular_velocity, cart_x, cart_velocity_x]
 
         self.arm_length = arm_length
-        self.starting_angle = starting_angle
 
         # Create pendulum bob (dynamic body)
         self.bob_body = pymunk.Body()
@@ -33,8 +29,7 @@ class CartPoleSimulation(Simulation):
 
     def reset(self):
         self.bob_body.position = (
-            self.cart_body.position
-            + self.arm_length * pymunk.Vec2d(1, 0).rotated(self.starting_angle)
+            self.cart_body.position + self.arm_length * pymunk.Vec2d(0, 1)
         )
         return super().reset()
 
