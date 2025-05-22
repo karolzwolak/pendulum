@@ -38,8 +38,7 @@ class Pendulum:
         self.bob_shape.mass = mass
 
         # Create joint
-        self.joint = pymunk.PinJoint(
-            self.pivot_body, self.bob_body, (0, 0), (0, 0))
+        self.joint = pymunk.PinJoint(self.pivot_body, self.bob_body, (0, 0), (0, 0))
 
         # Add to space
         self.space.add(self.pivot_body, self.pivot_shape)
