@@ -47,6 +47,8 @@ class Simulation:
 
     def reset(self):
         self.steps = 0
+        self.cart_body.position = (0, 0)
+        self.cart_body.velocity = (0, 0)
 
         return self.state()
 

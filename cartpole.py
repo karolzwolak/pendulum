@@ -31,6 +31,7 @@ class CartPoleSimulation(Simulation):
         self.bob_body.position = (
             self.cart_body.position + self.arm_length * pymunk.Vec2d(0, 1)
         )
+        self.bob_body.velocity = (0, 0)
         return super().reset()
 
     def angle(self):
