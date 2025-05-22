@@ -1,7 +1,7 @@
-from stable_baselines3 import PPO
 from stable_baselines3.common.env_checker import check_env
 from cartpole import CartPoleSimulation
-from model import Env
+from env import Env
+from model import load_model
 from renderer import Renderer
 
 
@@ -10,8 +10,7 @@ class RenderableEnv(Renderer):
         super().__init__(sim)
         self.env = Env(sim)
         check_env(self.env, warn=True)
-        self.model = PPO("MlpPolicy", self.env, verbose=1)
-        self.model.load("models/cartpole")
+        self.model = load_model("models/cartpole", self.env)
 
     def update(self):
         action, _ = self.model.predict(self.sim.state(), deterministic=True)
