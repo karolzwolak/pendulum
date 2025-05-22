@@ -10,15 +10,15 @@ class Renderer:
         pygame.init()
         info = pygame.display.Info()
         pygame.display.set_caption("Pendulum Simulation")
-        self.screen = pygame.display.set_mode((info.current_w, info.current_h))
-        pygame.display.toggle_fullscreen()
+        screen_size = (800, 600)
+        self.screen = pygame.display.set_mode((screen_size[0], screen_size[1]), pygame.RESIZABLE)
 
         self.draw_options = pymunk.pygame_util.DrawOptions(self.screen)
-        scale_x = info.current_w / (WORLD_SIZE * 2)
-        scale_y = info.current_h / (WORLD_SIZE * 2)
+        scale_x = screen_size[0]/ (WORLD_SIZE * 2)
+        scale_y = screen_size[1] / (WORLD_SIZE * 2)
         scale = min(scale_x, scale_y)
-        offset_x = info.current_w / 2
-        offset_y = info.current_h / 2
+        offset_x = screen_size[0] / 2
+        offset_y = screen_size[1] / 2
         transform = pymunk.Transform(a=scale, d=scale, tx=offset_x, ty=offset_y)
         self.draw_options.transform = transform
 
