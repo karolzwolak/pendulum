@@ -57,6 +57,7 @@ class Simulation:
         self.steps += 1
         self.apply_force(force)
         self.space.step(self.dt)
+        self.cart_body.velocity = (self.cart_body.velocity.x, 0)
 
         return self.state(), self.compute_reward(), self.is_done()
 
