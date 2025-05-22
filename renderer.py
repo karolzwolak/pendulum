@@ -19,7 +19,7 @@ class Renderer:
         scale = min(scale_x, scale_y)
         offset_x = info.current_w / 2
         offset_y = info.current_h / 2
-        transform = pymunk.Transform(a=scale, d=-scale, tx=offset_x, ty=offset_y)
+        transform = pymunk.Transform(a=scale, d=scale, tx=offset_x, ty=offset_y)
         self.draw_options.transform = transform
 
         self.clock = pygame.time.Clock()
