@@ -8,13 +8,12 @@ STARTING_ANGLE = 3.14 / 4
 class CartPoleSimulation(Simulation):
     def __init__(
         self,
-        draw_options,
-        length=200,
+        length=15,
         angle=STARTING_ANGLE,
-        weigth_mass=10,
-        cart_mass=10,
+        weigth_mass=1,
+        cart_mass=1,
     ):
-        super().__init__(draw_options, cart_mass=cart_mass)
+        super().__init__(cart_mass=cart_mass)
         self.obs_size = 4  # [angle, angular_velocity, cart_x, cart_velocity_x]
 
         self.length = length
@@ -22,17 +21,14 @@ class CartPoleSimulation(Simulation):
         # Create pendulum bob (dynamic body)
         self.bob_body = pymunk.Body()
         self.bob_body.position = (
-            self.cart_body.position.x + length *
-            pymunk.Vec2d(1, 0).rotated(angle).x,
-            self.cart_body.position.y + length *
-            pymunk.Vec2d(1, 0).rotated(angle).y,
+            self.cart_body.position.x + length * pymunk.Vec2d(1, 0).rotated(angle).x,
+            self.cart_body.position.y + length * pymunk.Vec2d(1, 0).rotated(angle).y,
         )
 
         self.bob_shape = pymunk.Circle(self.bob_body, weigth_mass)
         self.bob_shape.mass = weigth_mass
 
-        self.joint = pymunk.PinJoint(
-            self.cart_body, self.bob_body, (0, 0), (0, 0))
+        self.joint = pymunk.PinJoint(self.cart_body, self.bob_body, (0, 0), (0, 0))
 
         self.space.add(self.bob_body, self.bob_shape, self.joint)
 

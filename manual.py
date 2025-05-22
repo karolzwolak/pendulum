@@ -5,8 +5,8 @@ from cartpole import CartPoleSimulation
 
 
 class ManualRenderer(Renderer):
-    def __init__(self, sim_class):
-        super().__init__(sim_class)
+    def __init__(self, sim):
+        super().__init__(sim)
 
     def handle_input(self):
         keys = pygame.key.get_pressed()
@@ -24,7 +24,7 @@ class ManualRenderer(Renderer):
 
 
 def main():
-    renderer = ManualRenderer(CartPoleSimulation)
+    renderer = ManualRenderer(CartPoleSimulation())
     renderer.loop()
 
 

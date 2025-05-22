@@ -1,20 +1,22 @@
 import pymunk
 
+WORLD_SIZE = 100
+
 
 class Simulation:
     def __init__(
-        self, draw_options, cart_mass=10, gravity=(0, 981), frequency=60, max_steps=1000
+        self,
+        cart_mass=1,
+        gravity=(0, 981),
+        frequency=60,
+        max_steps=1000,
     ):
         self.space = pymunk.Space()
-
-        self.draw_options = draw_options
-
-        (self.width, self.height) = self.draw_options.surface.get_size()
 
         self.cart_body = pymunk.Body()
         self.cart_body.mass = cart_mass
         self.cart_body.moment = float("inf")  # Prevent it from rotating
-        self.cart_body.position = (self.width / 2, self.height / 2)
+        self.cart_body.position = (0, 0)
         self.cart_shape = pymunk.Circle(self.cart_body, cart_mass)
         self.space.add(self.cart_body, self.cart_shape)
 
@@ -35,9 +37,7 @@ class Simulation:
         raise NotImplementedError()
 
     def cart_x(self):
-        local_x = self.cart_body.position.x - self.width / 2
-        normalized_x = local_x / (self.width / 2)
-        return normalized_x
+        return self.cart_body.position.x
 
     def cart_velocity_x(self):
         return self.cart_body.velocity.x
@@ -49,7 +49,7 @@ class Simulation:
         self.steps = 0
 
     def is_done(self):
-        return abs(self.cart_x()) > 1.0 or self.steps >= self.max_steps
+        return abs(self.cart_x()) > WORLD_SIZE or self.steps >= self.max_steps
 
     def step(self, force=0):
         self.steps += 1
@@ -61,5 +61,5 @@ class Simulation:
     def draw(self, draw_options):
         self.space.debug_draw(draw_options)
 
-    def manually_move(self, direction, speed=200):
+    def manually_move(self, direction, speed=20):
         self.cart_body.velocity = (direction * speed, 0)
