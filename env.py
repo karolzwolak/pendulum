@@ -15,7 +15,8 @@ class Env(gym.Env):
         )  # One float: direction & magnitude
 
     def reset(self, seed=None, options=None):
-        obs = self.sim.reset()
+        self.sim.reset()
+        obs = self.sim.state()
         return np.array(obs, dtype=np.float32), {}
 
     def step(self, action):

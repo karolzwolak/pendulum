@@ -50,8 +50,6 @@ class Simulation:
         self.cart_body.position = (0, 0)
         self.cart_body.velocity = (0, 0)
 
-        return self.state()
-
     def is_done(self):
         return abs(self.cart_x()) > WORLD_SIZE or self.steps >= self.max_steps
 
