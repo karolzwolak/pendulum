@@ -32,6 +32,7 @@ class ManualRenderer(Renderer):
             self.sim.reset(angle=3.14 * 0.75)
         if keys[pygame.K_t]:
             self.sim.reset(self.sim.angle())
+        print("curr tick reward: ", self.sim.compute_reward())
 
 
 def main():
