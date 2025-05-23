@@ -24,7 +24,8 @@ class CartPoleSimulation(Simulation):
         self.bob_shape = pymunk.Circle(self.bob_body, weigth_mass)
         self.bob_shape.mass = weigth_mass
 
-        self.joint = pymunk.PinJoint(self.cart_body, self.bob_body, (0, 0), (0, 0))
+        self.joint = pymunk.PinJoint(
+            self.cart_body, self.bob_body, (0, 0), (0, 0))
 
         self.space.add(self.bob_body, self.bob_shape, self.joint)
 
@@ -48,7 +49,19 @@ class CartPoleSimulation(Simulation):
         return angle
 
     def angular_velocity(self):
-        return self.bob_body.angular_velocity
+        # World-space positions
+        pivot_pos = self.cart_body.position
+        bob_pos = self.bob_body.position
+
+        # Relative vector from pivot to bob
+        r = bob_pos - pivot_pos
+
+        # Bob's linear velocity at its center
+        v = self.bob_body.velocity
+
+        # Angular velocity = (r x v) / |r|²
+        angular_velocity = (r.x * v.y - r.y * v.x) / r.get_length_sqrd()
+        return angular_velocity
 
     def state(self):
         return np.array(
