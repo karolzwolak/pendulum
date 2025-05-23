@@ -31,10 +31,11 @@ class CartPoleSimulation(Simulation):
 
         self.space.add(self.bob_body, self.bob_shape, self.joint)
 
-    def reset(self):
+    def reset(self, angle=0):
         super().reset()
         self.bob_body.position = (
-            self.cart_body.position + self.arm_length * pymunk.Vec2d(0, 1)
+            self.cart_body.position
+            + self.arm_length * pymunk.Vec2d(0, 1).rotated(angle)
         )
         self.bob_body.velocity = (0, 0)
 
