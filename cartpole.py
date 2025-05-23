@@ -3,6 +3,8 @@ import math
 from simulation import Simulation
 import pymunk
 
+import simulation
+
 
 class CartPoleSimulation(Simulation):
     def __init__(
@@ -77,8 +79,9 @@ class CartPoleSimulation(Simulation):
     def compute_reward(self):
         angle = self.angle()
         upright_bonus = np.sin(angle)  # 1 when angle = 0 (upright)
-        position_penalty = -abs(self.cart_x()) * 0.1
+        position_penalty = -abs(self.cart_x()) / simulation.WORLD_SIZE
         velocity_penalty = -0.01 * (
             abs(self.angular_velocity()) + abs(self.cart_velocity_x())
         )
+        upright_bonus *= 10
         return upright_bonus + position_penalty + velocity_penalty + 1.0
