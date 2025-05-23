@@ -7,7 +7,7 @@ class CartPoleSimulation(Simulation):
     def __init__(
         self,
         arm_length=15,
-        weigth_mass=1,
+        weigth_mass=0.1,
         cart_mass=1,
     ):
         super().__init__(cart_mass=cart_mass)
