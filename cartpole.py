@@ -26,8 +26,7 @@ class CartPoleSimulation(Simulation):
         self.bob_shape = pymunk.Circle(self.bob_body, weigth_mass)
         self.bob_shape.mass = weigth_mass
 
-        self.joint = pymunk.PinJoint(
-            self.cart_body, self.bob_body, (0, 0), (0, 0))
+        self.joint = pymunk.PinJoint(self.cart_body, self.bob_body, (0, 0), (0, 0))
 
         self.space.add(self.bob_body, self.bob_shape, self.joint)
 
@@ -41,14 +40,16 @@ class CartPoleSimulation(Simulation):
 
     def angle(self):
         # Convert local anchors to world coordinates
-        world_anchor_a = self.bob_body.local_to_world(self.joint.anchor_a)
-        world_anchor_b = self.cart_body.local_to_world(self.joint.anchor_b)
+        world_anchor_a = self.cart_body.local_to_world(self.joint.anchor_a)
+        world_anchor_b = self.bob_body.local_to_world(self.joint.anchor_b)
 
         # Vector from A to B
         dx = world_anchor_b.x - world_anchor_a.x
         dy = world_anchor_b.y - world_anchor_a.y
 
         angle = math.atan2(dy, dx)  # Angle in radians
+        # 0 is at the bottem, pi is at the top
+        angle = angle - math.pi / 2  # Shift to 0 at the top
         return angle
 
     def angular_velocity(self):
@@ -79,7 +80,7 @@ class CartPoleSimulation(Simulation):
 
     def compute_reward(self):
         angle = self.angle()
-        upright_bonus = np.sin(angle)  # 1 when angle = 0 (upright)
+        upright_bonus = -np.cos(angle)  # 1 when angle = 0 (upright)
         position_penalty = -abs(self.cart_x()) / simulation.WORLD_SIZE
         velocity_penalty = -0.01 * (
             abs(self.angular_velocity()) + abs(self.cart_velocity_x())
