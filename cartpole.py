@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from simulation import Simulation
 import pymunk
 
@@ -32,10 +33,19 @@ class CartPoleSimulation(Simulation):
             self.cart_body.position + self.arm_length * pymunk.Vec2d(0, 1)
         )
         self.bob_body.velocity = (0, 0)
-        return super().reset()
+        super().reset()
 
     def angle(self):
-        return self.bob_body.angle
+        # Convert local anchors to world coordinates
+        world_anchor_a = self.bob_body.local_to_world(self.joint.anchor_a)
+        world_anchor_b = self.cart_body.local_to_world(self.joint.anchor_b)
+
+        # Vector from A to B
+        dx = world_anchor_b.x - world_anchor_a.x
+        dy = world_anchor_b.y - world_anchor_a.y
+
+        angle = math.atan2(dy, dx)  # Angle in radians
+        return angle
 
     def angular_velocity(self):
         return self.bob_body.angular_velocity
@@ -52,7 +62,8 @@ class CartPoleSimulation(Simulation):
         )
 
     def compute_reward(self):
-        upright_bonus = np.cos(self.angle())  # 1 when angle = 0 (upright)
+        angle = self.angle()
+        upright_bonus = np.sin(angle)  # 1 when angle = 0 (upright)
         position_penalty = -abs(self.cart_x()) * 0.1
         velocity_penalty = -0.01 * (
             abs(self.angular_velocity()) + abs(self.cart_velocity_x())
