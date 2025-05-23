@@ -32,11 +32,11 @@ class CartPoleSimulation(Simulation):
         self.space.add(self.bob_body, self.bob_shape, self.joint)
 
     def reset(self):
+        super().reset()
         self.bob_body.position = (
             self.cart_body.position + self.arm_length * pymunk.Vec2d(0, 1)
         )
         self.bob_body.velocity = (0, 0)
-        super().reset()
 
     def angle(self):
         # Convert local anchors to world coordinates

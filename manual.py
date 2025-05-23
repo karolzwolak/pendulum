@@ -16,6 +16,8 @@ class ManualRenderer(Renderer):
             self.sim.apply_force(-1)
         if keys[pygame.K_RIGHT]:
             self.sim.apply_force(1)
+        if keys[pygame.K_r]:
+            self.sim.reset()
 
 
 def main():
