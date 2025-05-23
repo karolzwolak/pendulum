@@ -30,7 +30,7 @@ class CartPoleSimulation(Simulation):
 
         self.space.add(self.bob_body, self.bob_shape, self.joint)
 
-    def reset(self, angle=0):
+    def reset(self, angle=3.14):
         super().reset()
         self.bob_body.position = (
             self.cart_body.position
