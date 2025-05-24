@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from satellite_joint import SatelliteJoint
 from simulation import Simulation
 import pymunk
 
@@ -12,60 +13,37 @@ class CartPoleSimulation(Simulation):
         arm_length=15,
         weigth_mass=0.1,
         cart_mass=1,
+        initial_angle=math.pi,  # top
     ):
         super().__init__(cart_mass=cart_mass)
         self.obs_size = 4  # [angle, angular_velocity, cart_x, cart_velocity_x]
-
-        self.arm_length = arm_length
+        self.initial_angle = initial_angle
 
         # Create pendulum bob (dynamic body)
         self.bob_body = pymunk.Body()
-        self.reset()
 
-        self.arm_length = arm_length
         self.bob_shape = pymunk.Circle(self.bob_body, weigth_mass)
         self.bob_shape.mass = weigth_mass
 
-        self.joint = pymunk.PinJoint(self.cart_body, self.bob_body, (0, 0), (0, 0))
-
-        self.space.add(self.bob_body, self.bob_shape, self.joint)
-
-    def reset(self, angle=3.14):
-        super().reset()
-        self.bob_body.position = (
-            self.cart_body.position
-            + self.arm_length * pymunk.Vec2d(0, 1).rotated(angle)
+        self.joint = SatelliteJoint(
+            self.cart_body, self.bob_body, arm_length, initial_angle
         )
-        self.bob_body.velocity = (0, 0)
+
+        self.space.add(self.bob_body, self.bob_shape)
+        self.joint.add_to_space(self.space)
+        self.reset()
+
+    def reset(self, angle=None):
+        if angle is None:
+            angle = self.initial_angle
+        super().reset()
+        self.joint.reset(angle)
 
     def angle(self):
-        # Convert local anchors to world coordinates
-        world_anchor_a = self.cart_body.local_to_world(self.joint.anchor_a)
-        world_anchor_b = self.bob_body.local_to_world(self.joint.anchor_b)
-
-        # Vector from A to B
-        dx = world_anchor_b.x - world_anchor_a.x
-        dy = world_anchor_b.y - world_anchor_a.y
-
-        angle = math.atan2(dy, dx)  # Angle in radians
-        # 0 is at the bottem, pi is at the top
-        angle = angle - math.pi / 2  # Shift to 0 at the top
-        return angle
+        return self.joint.relative_angle()
 
     def angular_velocity(self):
-        # World-space positions
-        pivot_pos = self.cart_body.position
-        bob_pos = self.bob_body.position
-
-        # Relative vector from pivot to bob
-        r = bob_pos - pivot_pos
-
-        # Bob's linear velocity at its center
-        v = self.bob_body.velocity
-
-        # Angular velocity = (r x v) / |r|²
-        angular_velocity = (r.x * v.y - r.y * v.x) / r.get_length_sqrd()
-        return angular_velocity
+        return self.joint.relative_angular_velocity()
 
     def state(self):
         return np.array(
