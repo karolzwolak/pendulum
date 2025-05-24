@@ -23,8 +23,7 @@ class CartPoleSimulation(Simulation):
             satellite_mass,
             pymunk.moment_for_circle(satellite_mass, 0, satellite_radius),
         )
-        self.satellite_shape = pymunk.Circle(
-            self.satellite_body, satellite_radius)
+        self.satellite_shape = pymunk.Circle(self.satellite_body, satellite_radius)
 
         self.joint = SatelliteJoint(
             self.cart_body, self.satellite_body, arm_length, initial_angle
@@ -77,7 +76,7 @@ class CartPoleSimulation(Simulation):
             return -10 * self.max_steps
         upright_bonus = self.shaped_upright_reward(self.joint.upright())
         position_penalty = -abs(self.cart_x()) / simulation.WORLD_SIZE
-        velocity_penalty = -0.01 * (
+        velocity_penalty = -0.004 * (
             abs(self.angular_velocity()) + abs(self.cart_velocity_x())
         )
         return upright_bonus + position_penalty + velocity_penalty
