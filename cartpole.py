@@ -94,7 +94,7 @@ class CartPoleSimulation(Simulation):
         Additional penalty for going out-of-bounds.
         """
         if self.is_out_of_bounds():
-            return -self.max_steps
+            return -0.5 * self.max_steps
         upright = self.joint.upright()
         reward = self.reward(
             upright,
