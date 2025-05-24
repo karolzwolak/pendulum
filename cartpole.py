@@ -23,7 +23,8 @@ class CartPoleSimulation(Simulation):
             satellite_mass,
             pymunk.moment_for_circle(satellite_mass, 0, satellite_radius),
         )
-        self.satellite_shape = pymunk.Circle(self.satellite_body, satellite_radius)
+        self.satellite_shape = pymunk.Circle(
+            self.satellite_body, satellite_radius)
 
         self.joint = SatelliteJoint(
             self.cart_body, self.satellite_body, arm_length, initial_angle
@@ -32,6 +33,10 @@ class CartPoleSimulation(Simulation):
         self.space.add(self.satellite_body, self.satellite_shape)
         self.joint.add_to_space(self.space)
         self.reset()
+
+    def step(self, force=0):
+        self.joint.step()
+        return super().step(force)
 
     def reset(self, angle=None):
         if angle is None:

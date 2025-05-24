@@ -34,6 +34,14 @@ class SatelliteJoint:
             primary, satellite, anchor_point_primary, anchor_point_satellite
         )
 
+    def fix_distance(self, angle):
+        self.satellite.position = self.primary.position + Vec2d(0, self.length).rotated(
+            -angle
+        )
+
+    def step(self):
+        self.fix_distance(self.relative_angle())
+
     def add_to_space(self, space: pymunk.Space):
         space.add(self.joint)
 
@@ -74,9 +82,7 @@ class SatelliteJoint:
         Reposition the satellite at the specified angle.
         0 = directly below, π = directly above.
         """
-        self.satellite.position = self.primary.position + Vec2d(0, self.length).rotated(
-            -angle
-        )
+        self.fix_distance(angle)
 
         # Zero velocity for clean reset
         self.satellite.velocity = Vec2d(0, 0)
