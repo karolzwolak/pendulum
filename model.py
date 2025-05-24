@@ -6,7 +6,8 @@ from env import Env
 
 
 def create_model(env):
-    return PPO("MlpPolicy", env, verbose=1, device="cpu")
+    policy_kwargs = dict(net_arch=dict(pi=[256, 256], vf=[256, 256]))
+    return PPO("MlpPolicy", env, verbose=1, device="cpu", policy_kwargs=policy_kwargs)
 
 
 def load_model(model_path, env):
