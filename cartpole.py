@@ -11,7 +11,8 @@ class CartPoleSimulation(Simulation):
     def __init__(
         self,
         arm_length=15,
-        weigth_mass=0.1,
+        satellite_mass=0.1,
+        satellite_radius=2,
         cart_mass=1,
         initial_angle=math.pi,  # top
     ):
@@ -19,17 +20,17 @@ class CartPoleSimulation(Simulation):
         self.obs_size = 4  # [angle, angular_velocity, cart_x, cart_velocity_x]
         self.initial_angle = initial_angle
 
-        # Create pendulum bob (dynamic body)
-        self.bob_body = pymunk.Body()
-
-        self.bob_shape = pymunk.Circle(self.bob_body, weigth_mass)
-        self.bob_shape.mass = weigth_mass
+        self.satellite_body = pymunk.Body(
+            satellite_mass, pymunk.moment_for_circle(
+                satellite_mass, 0, satellite_radius)
+        )
+        self.satellite_shape = pymunk.Circle(self.satellite_body, satellite_radius)
 
         self.joint = SatelliteJoint(
-            self.cart_body, self.bob_body, arm_length, initial_angle
+            self.cart_body, self.satellite_body, arm_length, initial_angle
         )
 
-        self.space.add(self.bob_body, self.bob_shape)
+        self.space.add(self.satellite_body, self.satellite_shape)
         self.joint.add_to_space(self.space)
         self.reset()
 
