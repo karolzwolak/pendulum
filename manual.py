@@ -9,6 +9,8 @@ class ManualRenderer(Renderer):
     def update(self):
         super().update()
         print("curr tick reward: ", self.sim.compute_reward())
+        if self.sim.is_done():
+            self.sim.reset()
 
 
 def main():
