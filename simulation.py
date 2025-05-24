@@ -44,7 +44,7 @@ class Simulation:
     def cart_velocity_x(self):
         return self.cart_body.velocity.x
 
-    def apply_force(self, force, mult=WORLD_SIZE * 20):
+    def apply_force(self, force, mult=WORLD_SIZE * 10):
         self.cart_body.apply_force_at_local_point((force * mult, 0), (0, 0))
 
     def reset(self):
