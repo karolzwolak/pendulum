@@ -15,7 +15,7 @@ class CartPoleSimulation(Simulation):
         cart_mass=1,
         initial_angle=0,
         # how often to randomize angle (in episodes)
-        randomize_angle_frequency=5,
+        randomize_angle_frequency=0,
     ):
         super().__init__(cart_mass=cart_mass)
         self.obs_size = 4  # [angle, angular_velocity, cart_x, cart_velocity_x]
@@ -128,7 +128,7 @@ class CartPoleSimulation(Simulation):
         Additional penalty for going out-of-bounds.
         """
         if self.is_out_of_bounds():
-            return -0.5 * self.max_steps
+            return -0.1 * self.max_steps
         upright = self.joint.upright()
         reward = self.reward(
             upright,
