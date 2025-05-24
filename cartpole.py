@@ -127,8 +127,6 @@ class CartPoleSimulation(Simulation):
         Scale to max reward of 1.
         Additional penalty for going out-of-bounds.
         """
-        if self.is_out_of_bounds():
-            return -0.1 * self.max_steps
         upright = self.joint.upright()
         reward = self.reward(
             upright,
