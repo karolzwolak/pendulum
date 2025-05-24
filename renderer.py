@@ -8,9 +8,8 @@ import pygame
 class Renderer:
     def __init__(self, sim):
         pygame.init()
-        info = pygame.display.Info()
         pygame.display.set_caption("Pendulum Simulation")
-        screen_size = (800, 600)
+        screen_size = (1000, 1000)
         self.screen = pygame.display.set_mode(
             (screen_size[0], screen_size[1]), pygame.RESIZABLE
         )
