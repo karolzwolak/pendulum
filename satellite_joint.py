@@ -1,6 +1,6 @@
 import pymunk
 from pymunk.vec2d import Vec2d
-import math
+import numpy as np
 
 
 class SatelliteJoint:
@@ -51,7 +51,7 @@ class SatelliteJoint:
             Angle in radians ∈ [0, 2π).
         """
         delta = self.satellite.position - self.primary.position
-        angle = math.atan2(delta.x, delta.y) % (2 * math.pi)
+        angle = np.atan2(delta.x, delta.y) % (2 * np.pi)
         return angle
 
     def relative_angular_velocity(self) -> float:
@@ -81,3 +81,6 @@ class SatelliteJoint:
         # Zero velocity for clean reset
         self.satellite.velocity = Vec2d(0, 0)
         self.satellite.angular_velocity = 0
+
+    def upright(self):
+        return -np.cos(self.relative_angle())

@@ -1,5 +1,4 @@
 import numpy as np
-import math
 from satellite_joint import SatelliteJoint
 from simulation import Simulation
 import pymunk
@@ -21,8 +20,8 @@ class CartPoleSimulation(Simulation):
         self.initial_angle = initial_angle
 
         self.satellite_body = pymunk.Body(
-            satellite_mass, pymunk.moment_for_circle(
-                satellite_mass, 0, satellite_radius)
+            satellite_mass,
+            pymunk.moment_for_circle(satellite_mass, 0, satellite_radius),
         )
         self.satellite_shape = pymunk.Circle(self.satellite_body, satellite_radius)
 
@@ -57,14 +56,23 @@ class CartPoleSimulation(Simulation):
             dtype=np.float32,
         )
 
+    @staticmethod
+    def shaped_upright_reward(upright: float) -> float:
+        """
+        Maps upright ∈ [-1, 1] to a reward ∈ [0, 10].
+        Quadratic shape: 10 when upright, 0 when hanging.
+        """
+        # Map -1..1 → 0..1, then square for curvature
+        normalized = (upright + 1) / 2  # -1 → 0, 0 → 0.5, 1 → 1
+        reward = 10 * (normalized**2)  # steeper near upright
+        return reward
+
     def compute_reward(self):
         if self.is_out_of_bounds():
             return -self.max_steps
-        angle = self.angle()
-        upright_bonus = -np.cos(angle)  # 1 when angle = 0 (upright)
+        upright_bonus = self.shaped_upright_reward(self.joint.upright())
         position_penalty = -abs(self.cart_x()) / simulation.WORLD_SIZE
         velocity_penalty = -0.01 * (
             abs(self.angular_velocity()) + abs(self.cart_velocity_x())
         )
-        upright_bonus *= 10
-        return upright_bonus + position_penalty + velocity_penalty + 1.0
+        return upright_bonus + position_penalty + velocity_penalty
