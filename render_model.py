@@ -14,8 +14,10 @@ class RenderableEnv(Renderer):
 
     def update(self):
         action, _ = self.model.predict(self.env.state(), deterministic=True)
-        _, _, done, _, _ = self.env.step(action)
-        if done:
+        print(f"Action: {action[0]:.2f}")
+        print(f"reward: {self.env.sim.compute_reward():.2f}")
+        self.env.step(action)
+        if self.env.sim.is_done():
             self.env.reset()
 
 
