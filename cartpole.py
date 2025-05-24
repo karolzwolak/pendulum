@@ -31,6 +31,8 @@ class CartPoleSimulation(Simulation):
 
         self.space.add(self.satellite_body, self.satellite_shape)
         self.joint.add_to_space(self.space)
+
+        self.max_step_reward = self.reward(1, 0, 0, 0)
         self.reset()
 
     def step(self, force=0):
@@ -71,17 +73,33 @@ class CartPoleSimulation(Simulation):
         reward = 10 * (normalized**2)  # steeper near upright
         return reward
 
-    def compute_reward(self):
-        if self.is_out_of_bounds():
-            return -2 * self.max_steps
-        upright = self.joint.upright()
-        upright_bonus = self.shaped_upright_reward(upright)
-        position_penalty = -((abs(self.cart_x()) / simulation.WORLD_SIZE) ** 2)
-        velocity_penalty = -0.01 * abs(self.angular_velocity()) - 0.002 * abs(
-            self.cart_velocity_x()
-        )
+    @staticmethod
+    def reward(upright, angular_velocity, cart_x, cart_velocity_x):
+        """
+        Computes the reward based on the upright position, angular velocity,
+        cart position, and cart velocity.
+        """
+        upright_bonus = CartPoleSimulation.shaped_upright_reward(upright)
+        position_penalty = -((abs(cart_x) / simulation.WORLD_SIZE) ** 2)
+        velocity_penalty = -0.01 * abs(angular_velocity) - 0.002 * abs(cart_velocity_x)
 
         swing_bonus = 0
         if upright <= 0:  # near inverted position
-            swing_bonus = abs(self.angular_velocity())
+            swing_bonus = abs(angular_velocity)
         return upright_bonus + position_penalty + velocity_penalty + swing_bonus
+
+    def compute_reward(self):
+        """Computes the reward for the current state.
+        Scale to max reward of 1.
+        Additional penalty for going out-of-bounds.
+        """
+        if self.is_out_of_bounds():
+            return -self.max_steps
+        upright = self.joint.upright()
+        reward = self.reward(
+            upright,
+            self.angular_velocity(),
+            self.cart_x(),
+            self.cart_velocity_x(),
+        )
+        return reward / self.max_step_reward
