@@ -75,7 +75,7 @@ class SatelliteJoint:
         0 = directly below, π = directly above.
         """
         self.satellite.position = self.primary.position + Vec2d(0, self.length).rotated(
-            angle
+            -angle
         )
 
         # Zero velocity for clean reset

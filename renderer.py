@@ -64,14 +64,14 @@ class Renderer:
             self.sim.reset(angle=3.14)
         if keys[pygame.K_s]:
             self.sim.reset(angle=0)
-        if keys[pygame.K_d]:
-            self.sim.reset(angle=3.14 * 1.5)
         if keys[pygame.K_a]:
+            self.sim.reset(angle=3.14 * 1.5)
+        if keys[pygame.K_d]:
             self.sim.reset(angle=3.14 * 0.5)
         if keys[pygame.K_e]:
-            self.sim.reset(angle=-3.14 * 0.75)
-        if keys[pygame.K_q]:
             self.sim.reset(angle=3.14 * 0.75)
+        if keys[pygame.K_q]:
+            self.sim.reset(angle=-3.14 * 0.75)
         if keys[pygame.K_t]:
             self.sim.reset(self.sim.angle())
 
