@@ -52,8 +52,11 @@ class Simulation:
         self.cart_body.position = (0, 0)
         self.cart_body.velocity = (0, 0)
 
+    def is_out_of_bounds(self):
+        return abs(self.cart_x()) > WORLD_SIZE
+
     def is_done(self):
-        return abs(self.cart_x()) > WORLD_SIZE or self.steps >= self.max_steps
+        return self.is_out_of_bounds() or self.steps >= self.max_steps
 
     def step(self, force=0):
         self.steps += 1
