@@ -14,7 +14,7 @@ class CartPoleSimulation(Simulation):
         satellite_mass=0.1,
         satellite_radius=2,
         cart_mass=1,
-        initial_angle=0,  # bottom
+        initial_angle=np.random.uniform(-0.5, 0.5),  # instead of near ±π
     ):
         super().__init__(cart_mass=cart_mass)
         self.obs_size = 4  # [angle, angular_velocity, cart_x, cart_velocity_x]
