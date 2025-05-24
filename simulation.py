@@ -62,8 +62,12 @@ class Simulation:
     def step(self, force=0):
         self.steps += 1
         self.apply_force(force)
-        self.space.step(self.dt)
+
+        # Enforce constraints after physics step
+        pos = self.cart_body.position
+        self.cart_body.position = (pos.x, 0)  # Lock Y position to 0
         self.cart_body.velocity = (self.cart_body.velocity.x, 0)
+        self.space.step(self.dt)
 
         return self.state(), self.compute_reward(), self.is_done()
 
