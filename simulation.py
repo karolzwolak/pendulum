@@ -7,17 +7,19 @@ class Simulation:
     def __init__(
         self,
         cart_mass=1,
+        cart_radius=2,
         gravity=(0, 981),
         frequency=60,
         max_steps=1000,
     ):
         self.space = pymunk.Space()
 
-        self.cart_body = pymunk.Body()
-        self.cart_body.mass = cart_mass
+        self.cart_body = pymunk.Body(cart_mass)
         self.cart_body.moment = float("inf")  # Prevent it from rotating
         self.cart_body.position = (0, 0)
-        self.cart_shape = pymunk.Circle(self.cart_body, cart_mass)
+
+        self.cart_shape = pymunk.Circle(self.cart_body, cart_radius)
+
         self.space.add(self.cart_body, self.cart_shape)
 
         self.gravity = gravity
