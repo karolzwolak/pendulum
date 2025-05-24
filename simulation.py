@@ -13,6 +13,7 @@ class Simulation:
         max_steps=1000,
     ):
         self.space = pymunk.Space()
+        self.space.damping = 0.8
 
         self.cart_body = pymunk.Body(cart_mass)
         self.cart_body.moment = float("inf")  # Prevent it from rotating
