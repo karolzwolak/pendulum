@@ -85,7 +85,7 @@ class CartPoleSimulation(Simulation):
 
         swing_bonus = 0
         if upright <= 0:  # near inverted position
-            swing_bonus = abs(angular_velocity)
+            swing_bonus = 0.5 * abs(angular_velocity)
         return upright_bonus + position_penalty + velocity_penalty + swing_bonus
 
     def compute_reward(self):
