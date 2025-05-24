@@ -1,8 +1,6 @@
 import pymunk
 
 WORLD_SIZE = 100
-FREQUENCY = 120
-MAX_STEPS = 10 * FREQUENCY
 
 
 class Simulation:
@@ -11,8 +9,8 @@ class Simulation:
         cart_mass=1,
         cart_radius=2,
         gravity=(0, 981),
-        frequency=FREQUENCY,
-        max_steps=MAX_STEPS,
+        frequency=60,
+        max_steps=1000,
     ):
         self.space = pymunk.Space()
 
