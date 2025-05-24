@@ -120,10 +120,7 @@ class CartPoleSimulation(Simulation):
         position_penalty = -((abs(cart_x) / simulation.WORLD_SIZE) ** 2)
         velocity_penalty = -0.01 * abs(angular_velocity) - 0.002 * abs(cart_velocity_x)
 
-        swing_bonus = 0
-        if upright <= 0:  # near inverted position
-            swing_bonus = 0.5 * abs(angular_velocity)
-        return upright_bonus + position_penalty + velocity_penalty + swing_bonus
+        return upright_bonus + position_penalty + velocity_penalty
 
     def compute_reward(self):
         """Computes the reward for the current state.
