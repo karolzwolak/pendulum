@@ -13,10 +13,10 @@ class RenderableEnv(Renderer):
         self.model = load_model("models/cartpole", self.env)
 
     def update(self):
-        action, _ = self.model.predict(self.sim.state(), deterministic=True)
+        action, _ = self.model.predict(self.env.state(), deterministic=True)
         _, _, done, _, _ = self.env.step(action)
         if done:
-            self.sim.reset()
+            self.env.reset()
 
 
 if __name__ == "__main__":

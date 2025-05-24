@@ -24,3 +24,6 @@ class Env(gym.Env):
         force = float(action[0])
         obs, reward, done = self.sim.step(force)
         return np.array(obs, dtype=np.float32), reward, done, False, {}
+
+    def state(self):
+        return self.sim.state()
