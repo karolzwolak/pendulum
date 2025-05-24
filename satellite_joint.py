@@ -28,14 +28,11 @@ class SatelliteJoint:
         self.satellite = satellite
         self.length = length
 
+        self.reset(initial_angle)
         # Create the pin joint (enforces distance constraint)
         self.joint = pymunk.PinJoint(
             primary, satellite, anchor_point_primary, anchor_point_satellite
         )
-        self.joint.distance = length
-
-        # Reset to initial angle
-        self.reset(initial_angle)
 
     def add_to_space(self, space: pymunk.Space):
         space.add(self.joint)
