@@ -73,7 +73,7 @@ class CartPoleSimulation(Simulation):
 
     def compute_reward(self):
         if self.is_out_of_bounds():
-            return -10 * self.max_steps
+            return -2 * self.max_steps
         upright = self.joint.upright()
         upright_bonus = self.shaped_upright_reward(upright)
         position_penalty = -((abs(self.cart_x()) / simulation.WORLD_SIZE) ** 2)
