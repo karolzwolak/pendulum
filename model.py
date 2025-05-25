@@ -48,7 +48,7 @@ def load_model_for_training(vec_env=make_parallel_envs, path="models/cartpole"):
     return eval_env, PPO.load(path, env=eval_env, device="cpu")
 
 
-def load_model(sim=CartPoleSimulation, path="models/cartpole"):
+def load_model(path, sim=CartPoleSimulation):
     sim = sim()
     vec_env = DummyVecEnv([lambda: Env(sim)])
     eval_env = VecNormalize.load(f"{path}_vec_normalize.pkl", vec_env)
