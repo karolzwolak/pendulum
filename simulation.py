@@ -19,6 +19,14 @@ class Simulation:
         self.cart_body = pymunk.Body(cart_mass)
         self.cart_body.moment = float("inf")  # Prevent it from rotating
         self.cart_body.position = (0, 0)
+        self.center = pymunk.Body(0, 0, body_type=pymunk.Body.STATIC)
+        self.center.position = (0, 0)
+
+        self.cart_rail = pymunk.GrooveJoint(
+            self.center, self.cart_body, (-WORLD_SIZE,
+                                          0), (WORLD_SIZE, 0), (0, 0)
+        )
+        self.space.add(self.cart_rail, self.center)
 
         self.cart_shape = pymunk.Circle(self.cart_body, cart_radius)
 
@@ -54,20 +62,13 @@ class Simulation:
         self.cart_body.position = (0, 0)
         self.cart_body.velocity = (0, 0)
 
-    def is_out_of_bounds(self):
-        return abs(self.cart_x()) > WORLD_SIZE
-
     def is_done(self):
-        return self.is_out_of_bounds() or self.steps >= self.max_steps
+        return self.steps >= self.max_steps
 
     def step(self, force=0):
         self.steps += 1
         self.apply_force(force)
 
-        # Enforce constraints after physics step
-        pos = self.cart_body.position
-        self.cart_body.position = (pos.x, 0)  # Lock Y position to 0
-        self.cart_body.velocity = (self.cart_body.velocity.x, 0)
         self.space.step(self.dt)
 
         return self.state(), self.compute_reward(), self.is_done()
