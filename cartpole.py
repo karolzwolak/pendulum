@@ -10,7 +10,7 @@ import simulation
 class CartPoleSimulation(Simulation):
     def __init__(
         self,
-        arm_length=15,
+        arm_length=20,
         satellite_mass=0.1,
         satellite_radius=2,
         cart_mass=1,
@@ -125,8 +125,8 @@ class CartPoleSimulation(Simulation):
         cart position, and cart velocity.
         """
         upright_bonus = CartPoleSimulation.shaped_upright_reward(upright)
-        position_penalty = -2 * ((abs(cart_x) / simulation.WORLD_SIZE) ** 2)
-        velocity_penalty = -0.01 * abs(angular_velocity) - 0.002 * abs(cart_velocity_x)
+        position_penalty = -4 * ((abs(cart_x) / simulation.WORLD_SIZE) ** 2)
+        velocity_penalty = -0.005 * abs(angular_velocity) - 0.002 * abs(cart_velocity_x)
 
         return upright_bonus + position_penalty + velocity_penalty
 
