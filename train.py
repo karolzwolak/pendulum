@@ -8,7 +8,7 @@ def main():
     model = create_model(env)
 
     try:
-        model.learn(total_timesteps=10_000_000, progress_bar=True)
+        model.learn(total_timesteps=1_000_000, progress_bar=True)
     except KeyboardInterrupt:
         if input("Save model? (y/n): ").lower() == "y":
             save_model(model, env)

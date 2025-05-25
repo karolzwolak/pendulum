@@ -19,7 +19,7 @@ def create_model(env):
         n_steps=MAX_STEPS,
         batch_size=NUM_ENVS * MAX_STEPS,
         n_epochs=20,
-        learning_rate=lambda x: 0.01 ** (1 - x) / 50,
+        learning_rate=1e-2,
     )
 
 
