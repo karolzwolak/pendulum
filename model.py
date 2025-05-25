@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecNormalize, DummyVecEnv
 from stable_baselines3.common.env_util import make_vec_env
 from cartpole import CartPoleSimulation
 from simulation import MAX_STEPS
@@ -21,8 +21,11 @@ def create_model(env):
     )
 
 
-def load_model(model_path, env):
-    return PPO.load(model_path, env, device="cpu")
+def save_model(model, env, path="models/cartpole"):
+    """Save the model to the specified path."""
+    model.save(path)
+    env.save(f"{path}_vec_normalize.pkl")
+    print(f"Model saved to {path}")
 
 
 def make_parallel_envs(num_envs=NUM_ENVS):
@@ -30,3 +33,27 @@ def make_parallel_envs(num_envs=NUM_ENVS):
     return make_vec_env(
         lambda: Env(CartPoleSimulation()), n_envs=num_envs, vec_env_cls=SubprocVecEnv
     )
+
+
+def make_parallel_normalized_envs(num_envs=NUM_ENVS):
+    return VecNormalize(make_parallel_envs(num_envs), norm_obs=True, norm_reward=True)
+
+
+def load_model_for_training(vec_env=make_parallel_envs, path="models/cartpole"):
+    eval_env = VecNormalize.load(f"{path}_vec_normalize.pkl", vec_env())
+
+    eval_env.training = False
+    eval_env.norm_reward = False
+
+    return eval_env, PPO.load(path, env=eval_env, device="cpu")
+
+
+def load_model(sim=CartPoleSimulation, path="models/cartpole"):
+    sim = sim()
+    vec_env = DummyVecEnv([lambda: Env(sim)])
+    eval_env = VecNormalize.load(f"{path}_vec_normalize.pkl", vec_env)
+
+    eval_env.training = False
+    eval_env.norm_reward = False
+
+    return sim, eval_env, PPO.load(f"{path}.zip", env=eval_env, device="cpu")

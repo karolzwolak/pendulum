@@ -1,24 +1,19 @@
-from stable_baselines3.common.env_checker import check_env
-from cartpole import CartPoleSimulation
-from env import Env
-from model import create_model, make_parallel_envs
+from model import make_parallel_normalized_envs, create_model, save_model
 
 
 def main():
     # Use parallel environments
-    env = make_parallel_envs()
-
-    # Check one of the environments
-    check_env(Env(CartPoleSimulation()), warn=True)
+    env = make_parallel_normalized_envs()
 
     model = create_model(env)
+
     try:
         model.learn(total_timesteps=10_000_000, progress_bar=True)
     except KeyboardInterrupt:
         if input("Save model? (y/n): ").lower() == "y":
-            model.save("models/cartpole")
+            save_model(model, env)
         return
-    model.save("models/cartpole")
+    save_model(model, env)
 
 
 if __name__ == "__main__":

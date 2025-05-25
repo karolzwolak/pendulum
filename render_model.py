@@ -1,28 +1,29 @@
-from stable_baselines3.common.env_checker import check_env
-from cartpole import CartPoleSimulation
-from env import Env
 from model import load_model
 from renderer import Renderer
 
 
 class RenderableEnv(Renderer):
-    def __init__(self, sim):
+    def __init__(self, load_model=load_model):
+        sim, self.env, self.model = load_model()
         super().__init__(sim)
-        self.env = Env(sim)
-        check_env(self.env, warn=True)
-        self.model = load_model("models/cartpole", self.env)
+        self.obs = self.env.reset()
+        self.total_reward = 0
 
     def update(self):
-        action, _ = self.model.predict(self.env.state(), deterministic=True)
-        print(f"Action: {action[0]:.2f}")
-        print(f"reward: {self.env.sim.compute_reward():.2f}")
-        self.env.step(action)
-        if self.env.sim.is_done():
-            self.env.reset()
+        action, _ = self.model.predict(self.obs, deterministic=True)
+        self.obs, reward, done, _ = self.env.step(action)
+        reward = reward[0]
+        print(f"reward: {reward:.2f} action: {action[0][0]:.2f}")
+        self.total_reward += reward
+        if done:
+            self.obs = self.env.reset()
+            print("========== Episode finished ==========")
+            print(f"Total reward: {self.total_reward:.2f}")
+            print("======================================")
+            self.total_reward = 0
 
 
 if __name__ == "__main__":
-    sim = CartPoleSimulation()
-    renderer = RenderableEnv(sim)
+    renderer = RenderableEnv()
 
     renderer.run()
