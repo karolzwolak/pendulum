@@ -14,7 +14,7 @@ class ManualRenderer(Renderer):
 
 
 def main():
-    renderer = ManualRenderer(CartPoleSimulation())
+    renderer = ManualRenderer(CartPoleSimulation(max_steps=float("inf")))
     renderer.run()
 
 
