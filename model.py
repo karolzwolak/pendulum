@@ -18,6 +18,8 @@ def create_model(env):
         policy_kwargs=policy_kwargs,
         n_steps=MAX_STEPS,
         batch_size=NUM_ENVS * MAX_STEPS,
+        n_epochs=50,
+        learning_rate=5e-4,
     )
 
 
