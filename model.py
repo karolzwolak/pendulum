@@ -8,6 +8,13 @@ from env import Env
 NUM_ENVS = 32
 
 
+def linear_schedule(initial_value):
+    def func(progress):
+        return initial_value * progress
+
+    return func
+
+
 def create_model(env):
     policy_kwargs = dict(net_arch=dict(pi=[16, 8], vf=[16, 8]))
     return PPO(
@@ -19,7 +26,10 @@ def create_model(env):
         n_steps=MAX_STEPS,
         batch_size=NUM_ENVS * MAX_STEPS,
         n_epochs=20,
-        learning_rate=1e-2,
+        learning_rate=linear_schedule(5e-3),
+        gamma=0.98,
+        gae_lambda=0.95,
+        ent_coef=0.01,
     )
 
 
