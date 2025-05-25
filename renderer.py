@@ -52,6 +52,14 @@ class Renderer:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.exit()
+
+        mouse_pressed = pygame.mouse.get_pressed()
+        (mouse_x, _) = pygame.mouse.get_pos()
+        if mouse_pressed[0]:
+            half_width = self.screen.get_width() / 2
+            offset = mouse_x - half_width
+            self.sim.apply_force(offset / half_width)
+
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:

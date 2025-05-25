@@ -2,6 +2,7 @@ import numpy as np
 from satellite_joint import SatelliteJoint
 from simulation import Simulation
 import pymunk
+import math
 
 import simulation
 
@@ -16,8 +17,9 @@ class CartPoleSimulation(Simulation):
         initial_angle=0,
         # how often to randomize angle (in episodes)
         randomize_angle_frequency=0,
+        max_steps=simulation.MAX_STEPS,
     ):
-        super().__init__(cart_mass=cart_mass)
+        super().__init__(cart_mass=cart_mass, max_steps=max_steps)
         self.obs_size = 4  # [angle, angular_velocity, cart_x, cart_velocity_x]
         self.initial_angle = initial_angle
 
@@ -34,9 +36,12 @@ class CartPoleSimulation(Simulation):
         self.space.add(self.satellite_body, self.satellite_shape)
         self.joint.add_to_space(self.space)
 
-        # scale so the ideal total reward is 100
-        self.max_step_reward = self.reward(1, 0, 0, 0)
-        self.max_step_reward *= self.max_steps / 100
+        if not math.isinf(self.max_steps):
+            # scale so the ideal total reward is 100
+            self.max_step_reward = self.reward(1, 0, 0, 0)
+            self.max_step_reward *= self.max_steps / 100
+        else:
+            self.max_step_reward = 1
 
         self.total_reward = 0
 

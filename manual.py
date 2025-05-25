@@ -8,13 +8,13 @@ class ManualRenderer(Renderer):
 
     def update(self):
         super().update()
-        print("curr tick reward: ", self.sim.compute_reward())
+        #print("curr tick reward: ", self.sim.compute_reward())
         if self.sim.is_done():
             self.sim.reset()
 
 
 def main():
-    renderer = ManualRenderer(CartPoleSimulation())
+    renderer = ManualRenderer(CartPoleSimulation(max_steps=float("inf")))
     renderer.run()
 
 
