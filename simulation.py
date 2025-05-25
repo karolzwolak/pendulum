@@ -1,6 +1,7 @@
 import pymunk
 
 WORLD_SIZE = 100
+MAX_STEPS = 1000
 
 
 class Simulation:
@@ -10,7 +11,7 @@ class Simulation:
         cart_radius=2,
         gravity=(0, 981),
         frequency=60,
-        max_steps=1000,
+        max_steps=MAX_STEPS,
     ):
         self.space = pymunk.Space()
         self.space.damping = 0.8

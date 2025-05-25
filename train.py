@@ -6,7 +6,7 @@ from model import create_model, make_parallel_envs
 
 def main():
     # Use parallel environments
-    env = make_parallel_envs(num_envs=4)
+    env = make_parallel_envs()
 
     # Check one of the environments
     check_env(Env(CartPoleSimulation()), warn=True)
