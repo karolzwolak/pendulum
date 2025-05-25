@@ -35,7 +35,7 @@ class CartPoleSimulation(Simulation):
         self.space.add(self.satellite_body, self.satellite_shape)
         self.joint.add_to_space(self.space)
 
-        if self.max_steps is not float("inf"):
+        if not math.isinf(self.max_steps):
             # scale so the ideal total reward is 100
             self.max_step_reward = self.reward(1, 0, 0, 0)
             self.max_step_reward *= self.max_steps / 100
