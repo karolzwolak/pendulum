@@ -52,8 +52,14 @@ class Renderer:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.exit()
-        keys = pygame.key.get_pressed()
-
+        
+        mouse_pressed = pygame.mouse.get_pressed()
+        (mouse_x, _) = pygame.mouse.get_pos()
+        if mouse_pressed[0]:
+            offset = mouse_x - self.screen.get_width() / 2
+            self.sim.apply_force(0.7 * offset / (self.screen.get_width() / 2))
+        
+        """
         if keys[pygame.K_LEFT]:
             self.sim.apply_force(-1)
         if keys[pygame.K_RIGHT]:
@@ -74,7 +80,7 @@ class Renderer:
             self.sim.reset(angle=-3.14 * 0.75)
         if keys[pygame.K_t]:
             self.sim.reset(self.sim.angle())
-
+        """
     def render(self):
         self.handle_input()
         self.update()
