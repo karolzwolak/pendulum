@@ -9,7 +9,7 @@ NUM_ENVS = 32
 
 
 def create_model(env):
-    policy_kwargs = dict(net_arch=dict(pi=[128, 128], vf=[128, 128]))
+    policy_kwargs = dict(net_arch=dict(pi=[16, 8], vf=[16, 8]))
     return PPO(
         "MlpPolicy",
         env,
@@ -18,8 +18,8 @@ def create_model(env):
         policy_kwargs=policy_kwargs,
         n_steps=MAX_STEPS,
         batch_size=NUM_ENVS * MAX_STEPS,
-        n_epochs=50,
-        learning_rate=5e-4,
+        n_epochs=20,
+        learning_rate=lambda x: 0.01 ** (1 - x) / 50,
     )
 
 
