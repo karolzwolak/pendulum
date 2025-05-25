@@ -125,7 +125,7 @@ class CartPoleSimulation(Simulation):
         cart position, and cart velocity.
         """
         upright_bonus = CartPoleSimulation.shaped_upright_reward(upright)
-        position_penalty = -((abs(cart_x) / simulation.WORLD_SIZE) ** 2)
+        position_penalty = -2 * ((abs(cart_x) / simulation.WORLD_SIZE) ** 2)
         velocity_penalty = -0.01 * abs(angular_velocity) - 0.002 * abs(cart_velocity_x)
 
         return upright_bonus + position_penalty + velocity_penalty
