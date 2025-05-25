@@ -34,7 +34,10 @@ class CartPoleSimulation(Simulation):
         self.space.add(self.satellite_body, self.satellite_shape)
         self.joint.add_to_space(self.space)
 
+        # scale so the ideal total reward is 100
         self.max_step_reward = self.reward(1, 0, 0, 0)
+        self.max_step_reward *= self.max_steps / 100
+
         self.total_reward = 0
 
         self.initial_angle = initial_angle
