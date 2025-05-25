@@ -5,11 +5,11 @@ from cartpole import CartPoleSimulation
 from simulation import MAX_STEPS
 from env import Env
 
-NUM_ENVS = 16
+NUM_ENVS = 32
 
 
 def create_model(env):
-    policy_kwargs = dict(net_arch=dict(pi=[256, 256], vf=[256, 256]))
+    policy_kwargs = dict(net_arch=dict(pi=[128, 128], vf=[128, 128]))
     return PPO(
         "MlpPolicy",
         env,
