@@ -1,5 +1,9 @@
 # Inverted Pendulum Balance with Reinforcement Learning
 
+## Demo
+
+![Demo](demo.webp)
+
 A PyMunk physics simulation trained using Stable Baselines3 PPO to balance an inverted pendulum (cartpole system).
 
 ## Features
