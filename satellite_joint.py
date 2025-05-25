@@ -66,7 +66,7 @@ class SatelliteJoint:
         """
         Calculate the angular velocity of the satellite relative to the primary.
         Returns:
-            Angular velocity in radians per second. 
+            Angular velocity in radians per second.
         """
         r = self.satellite.position - self.primary.position
         v = self.satellite.velocity - self.primary.velocity
