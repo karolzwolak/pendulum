@@ -16,7 +16,7 @@ def linear_schedule(initial_value):
 
 
 def create_model(env):
-    policy_kwargs = dict(net_arch=dict(pi=[16, 8], vf=[16, 8]))
+    policy_kwargs = dict(net_arch=[16, 8])
     return PPO(
         "MlpPolicy",
         env,
