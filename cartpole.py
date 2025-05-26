@@ -27,7 +27,8 @@ class CartPoleSimulation(Simulation):
             satellite_mass,
             pymunk.moment_for_circle(satellite_mass, 0, satellite_radius),
         )
-        self.satellite_shape = pymunk.Circle(self.satellite_body, satellite_radius)
+        self.satellite_shape = pymunk.Circle(
+            self.satellite_body, satellite_radius)
 
         self.joint = SatelliteJoint(
             self.cart_body, self.satellite_body, arm_length, initial_angle
@@ -119,14 +120,23 @@ class CartPoleSimulation(Simulation):
         return reward
 
     @staticmethod
-    def reward(upright, angular_velocity, cart_x, cart_velocity_x):
+    def reward(
+        upright, angular_velocity, cart_x, cart_velocity_x, penalty_threshold=0.7
+    ):
         """
         Computes the reward based on the upright position, angular velocity,
         cart position, and cart velocity.
         """
         upright_bonus = CartPoleSimulation.shaped_upright_reward(upright)
+
+        # we apply a penalty only if the pendulum is upright
+        # we don't want to discourage exploration
+        if upright_bonus < penalty_threshold:
+            return upright_bonus
+
         position_penalty = -4 * ((abs(cart_x) / simulation.WORLD_SIZE) ** 2)
-        velocity_penalty = -0.005 * abs(angular_velocity) - 0.002 * abs(cart_velocity_x)
+        velocity_penalty = -0.005 * \
+            abs(angular_velocity) - 0.002 * abs(cart_velocity_x)
 
         return upright_bonus + position_penalty + velocity_penalty
 
