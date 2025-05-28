@@ -43,7 +43,7 @@ def main():
 
     try:
         model.learn(
-            total_timesteps=1_000_000,
+            total_timesteps=10_000_000,
             progress_bar=True,
             callback=StopTrainingCallback(reward_threshold=80),
         )
