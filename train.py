@@ -1,5 +1,6 @@
 from stable_baselines3.common.callbacks import BaseCallback
 from collections import deque
+from tqdm import tqdm
 
 from model import create_model, make_parallel_normalized_envs, save_model
 
@@ -23,6 +24,15 @@ class CurriculumLearningCallback(BaseCallback):
 
     def _on_training_start(self) -> None:
         self.training_env.env_method("progress_curriculum", 0)
+        self.model._current_progress_remaining = 1.0
+        self.pbar = tqdm(
+            total=self.curriculum_steps,
+            desc="Curriculum Progress",
+            dynamic_ncols=True,
+        )
+
+    def _on_training_end(self) -> None:
+        self.pbar.close()
 
     def _on_step(self) -> bool:
         dones = self.locals.get("dones")
@@ -46,9 +56,13 @@ class CurriculumLearningCallback(BaseCallback):
         ):
             self.curriculum_step += 1
             t = self.curriculum_step / self.curriculum_steps
+
             self.training_env.env_method("progress_curriculum", t)
-            print(f"Progressing curriculum with t={t}")
             self.episode_rewards.clear()
+
+            self._current_progress_remaining = 1.0 - t
+            self.pbar.n = self.curriculum_step
+            self.pbar.refresh()
 
         if finished_curriculum and mean_reward >= self.stop_traning_reward_threshold:
             print(
@@ -68,7 +82,6 @@ def main():
     try:
         model.learn(
             total_timesteps=10_000_000,
-            progress_bar=True,
             callback=CurriculumLearningCallback(),
         )
     except KeyboardInterrupt:
