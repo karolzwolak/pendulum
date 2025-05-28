@@ -8,7 +8,6 @@ class Simulation:
     def __init__(
         self,
         cart_mass=1,
-        cart_radius=2,
         gravity=(0, 981),
         frequency=60,
         max_steps=MAX_STEPS,
@@ -16,8 +15,7 @@ class Simulation:
         self.space = pymunk.Space()
         self.space.damping = 0.8
 
-        self.cart_body = pymunk.Body(cart_mass)
-        self.cart_body.moment = float("inf")  # Prevent it from rotating
+        self.cart_body = pymunk.Body(cart_mass, float("inf"))
         self.cart_body.position = (0, 0)
         self.center = pymunk.Body(0, 0, body_type=pymunk.Body.STATIC)
         self.center.position = (0, 0)

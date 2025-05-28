@@ -12,7 +12,6 @@ class CartPoleSimulation(Simulation):
         self,
         arm_length=20,
         satellite_mass=0.1,
-        satellite_radius=2,
         cart_mass=1,
         initial_angle=0,
         max_steps=simulation.MAX_STEPS,
@@ -23,7 +22,7 @@ class CartPoleSimulation(Simulation):
 
         self.mid_body = pymunk.Body(
             satellite_mass,
-            pymunk.moment_for_circle(satellite_mass, 0, satellite_radius),
+            float("inf"),
         )
         self.mid_shape = pymunk.Circle(self.mid_body, satellite_radius)
 
@@ -36,7 +35,7 @@ class CartPoleSimulation(Simulation):
 
         self.tip_body = pymunk.Body(
             satellite_mass,
-            pymunk.moment_for_circle(satellite_mass, 0, satellite_radius),
+            float("inf"),
         )
         self.tip_shape = pymunk.Circle(self.tip_body, satellite_radius)
 
