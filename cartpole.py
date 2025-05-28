@@ -15,8 +15,6 @@ class CartPoleSimulation(Simulation):
         satellite_radius=2,
         cart_mass=1,
         initial_angle=0,
-        # how often to randomize angle (in episodes)
-        randomize_angle_frequency=0,
         max_steps=simulation.MAX_STEPS,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
@@ -27,8 +25,7 @@ class CartPoleSimulation(Simulation):
             satellite_mass,
             pymunk.moment_for_circle(satellite_mass, 0, satellite_radius),
         )
-        self.satellite_shape = pymunk.Circle(
-            self.satellite_body, satellite_radius)
+        self.satellite_shape = pymunk.Circle(self.satellite_body, satellite_radius)
 
         self.joint = SatelliteJoint(
             self.cart_body, self.satellite_body, arm_length, initial_angle
@@ -47,9 +44,6 @@ class CartPoleSimulation(Simulation):
         self.total_reward = 0
 
         self.initial_angle = initial_angle
-        self.angle_range = None
-        self.randomize_angle_frequency = randomize_angle_frequency
-        self.randomize_angle_counter = 1
         self.reset()
 
     def step(self, force=0):
@@ -58,33 +52,7 @@ class CartPoleSimulation(Simulation):
         self.total_reward += self.compute_reward()
         return res
 
-    def update_angle_range(self):
-        if self.randomize_angle_counter < self.randomize_angle_frequency:
-            self.randomize_angle_counter += 1
-            return
-        # do not update if the model is performing poorly
-        if self.total_reward <= 0:
-            return
-        performance = self.total_reward / self.max_steps  # (0, 1]
-        # better performance means lower baseline (harder)
-        baseline = 1 - performance
-        baseline *= np.pi
-        print("baseline upright:", -np.cos(baseline))
-        range_diff = np.random.uniform(0.1, 0.5) / 2
-        self.angle_range = (baseline - range_diff, baseline + range_diff)
-        self.randomize_angle_counter = 1
-        self.reroll_angle()
-        print("updating random angle range to", self.angle_range)
-
-    def reroll_angle(self):
-        new_angle = np.random.uniform(self.angle_range[0], self.angle_range[1])
-        rand_sign = np.random.choice([-1, 1])
-        new_angle *= rand_sign
-        self.initial_angle = new_angle
-
     def reset(self, angle=None):
-        if self.randomize_angle_frequency > 0:
-            self.update_angle_range()
         if angle is None:
             angle = self.initial_angle
         super().reset()
