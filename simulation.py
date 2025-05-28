@@ -12,6 +12,7 @@ class Simulation:
         damping=0.8,
         frequency=60,
         max_steps=MAX_STEPS,
+        substeps=2,
     ):
         self.space = pymunk.Space()
         self.space.damping = damping
@@ -30,7 +31,8 @@ class Simulation:
         self.space.add(self.cart_body)
 
         self.frequency = frequency
-        self.dt = 1.0 / frequency
+        self.substeps = substeps
+        self.dt = 1.0 / self.frequency / self.substeps
         self.max_steps = max_steps
         self.steps = 0
 
@@ -64,7 +66,8 @@ class Simulation:
         self.steps += 1
         self.apply_force(force)
 
-        self.space.step(self.dt)
+        for _ in range(self.substeps):
+            self.space.step(self.dt)
 
         return self.state(), self.compute_reward(), self.is_done()
 
