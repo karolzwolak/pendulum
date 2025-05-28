@@ -76,4 +76,3 @@ The reward combines:
 
 - Upright position bonus (quadratic)
 - Position penalty (keeps cart centered)
-- Velocity penalties (angular and linear)
