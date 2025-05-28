@@ -23,8 +23,7 @@ class Simulation:
         self.center.position = (0, 0)
 
         self.cart_rail = pymunk.GrooveJoint(
-            self.center, self.cart_body, (-WORLD_SIZE,
-                                          0), (WORLD_SIZE, 0), (0, 0)
+            self.center, self.cart_body, (-WORLD_SIZE, 0), (WORLD_SIZE, 0), (0, 0)
         )
         self.space.add(self.cart_rail, self.center)
 
