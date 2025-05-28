@@ -25,9 +25,7 @@ class Simulation:
         )
         self.space.add(self.cart_rail, self.center)
 
-        self.cart_shape = pymunk.Circle(self.cart_body, cart_radius)
-
-        self.space.add(self.cart_body, self.cart_shape)
+        self.space.add(self.cart_body)
 
         self.gravity = gravity
         self.space.gravity = self.gravity

@@ -24,26 +24,24 @@ class CartPoleSimulation(Simulation):
             satellite_mass,
             float("inf"),
         )
-        self.mid_shape = pymunk.Circle(self.mid_body, satellite_radius)
 
         self.mid_joint = SatelliteJoint(
             self.cart_body, self.mid_body, arm_length, initial_angle
         )
 
-        self.space.add(self.mid_body, self.mid_shape)
+        self.space.add(self.mid_body)
         self.mid_joint.add_to_space(self.space)
 
         self.tip_body = pymunk.Body(
             satellite_mass,
             float("inf"),
         )
-        self.tip_shape = pymunk.Circle(self.tip_body, satellite_radius)
 
         self.tip_joint = SatelliteJoint(
             self.mid_body, self.tip_body, arm_length, initial_angle
         )
 
-        self.space.add(self.tip_body, self.tip_shape)
+        self.space.add(self.tip_body)
         self.tip_joint.add_to_space(self.space)
 
         if not math.isinf(self.max_steps):
