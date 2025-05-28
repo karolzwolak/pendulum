@@ -21,18 +21,31 @@ class CartPoleSimulation(Simulation):
         self.obs_size = 4  # [angle, angular_velocity, cart_x, cart_velocity_x]
         self.initial_angle = initial_angle
 
-        self.satellite_body = pymunk.Body(
+        self.mid_body = pymunk.Body(
             satellite_mass,
             pymunk.moment_for_circle(satellite_mass, 0, satellite_radius),
         )
-        self.satellite_shape = pymunk.Circle(self.satellite_body, satellite_radius)
+        self.mid_shape = pymunk.Circle(self.mid_body, satellite_radius)
 
-        self.joint = SatelliteJoint(
-            self.cart_body, self.satellite_body, arm_length, initial_angle
+        self.mid_joint = SatelliteJoint(
+            self.cart_body, self.mid_body, arm_length, initial_angle
         )
 
-        self.space.add(self.satellite_body, self.satellite_shape)
-        self.joint.add_to_space(self.space)
+        self.space.add(self.mid_body, self.mid_shape)
+        self.mid_joint.add_to_space(self.space)
+
+        self.tip_body = pymunk.Body(
+            satellite_mass,
+            pymunk.moment_for_circle(satellite_mass, 0, satellite_radius),
+        )
+        self.tip_shape = pymunk.Circle(self.tip_body, satellite_radius)
+
+        self.tip_joint = SatelliteJoint(
+            self.mid_body, self.tip_body, arm_length, initial_angle
+        )
+
+        self.space.add(self.tip_body, self.tip_shape)
+        self.tip_joint.add_to_space(self.space)
 
         if not math.isinf(self.max_steps):
             # scale so the ideal total reward is 100
@@ -47,7 +60,8 @@ class CartPoleSimulation(Simulation):
         self.reset()
 
     def step(self, force=0):
-        self.joint.step()
+        self.mid_joint.step()
+        self.tip_joint.step()
         res = super().step(force)
         self.total_reward += self.compute_reward()
         return res
@@ -56,14 +70,15 @@ class CartPoleSimulation(Simulation):
         if angle is None:
             angle = self.initial_angle
         super().reset()
-        self.joint.reset(angle)
+        self.mid_joint.reset(angle)
+        self.tip_joint.reset(angle)
         self.total_reward = 0
 
     def angle(self):
-        return self.joint.relative_angle()
+        return self.mid_joint.relative_angle()
 
     def angular_velocity(self):
-        return self.joint.relative_angular_velocity()
+        return self.mid_joint.relative_angular_velocity()
 
     def state(self):
         return np.array(
@@ -101,7 +116,7 @@ class CartPoleSimulation(Simulation):
         return upright_bonus + position_penalty
 
     def compute_reward(self):
-        upright = self.joint.upright()
+        upright = self.mid_joint.upright()
         reward = self.reward(
             upright,
             self.cart_x(),
