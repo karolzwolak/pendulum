@@ -33,3 +33,6 @@ class Env(gym.Env):
 
     def state(self):
         return self.sim.state()
+
+    def progress_curriculum(self, t):
+        self.sim.progress_curriculum(t)

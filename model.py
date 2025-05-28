@@ -43,7 +43,7 @@ def save_model(model, env, path="models/cartpole"):
 def make_parallel_envs(num_envs=NUM_ENVS):
     """Create multiple parallel environments for faster sampling"""
     return make_vec_env(
-        lambda: Env(CartPoleSimulation(use_curriculum_learning=True)),
+        lambda: Env(CartPoleSimulation()),
         n_envs=num_envs,
         vec_env_cls=SubprocVecEnv,
     )
