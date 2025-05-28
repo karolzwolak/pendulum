@@ -8,12 +8,14 @@ class Simulation:
     def __init__(
         self,
         cart_mass=1,
-        gravity=(0, 981),
+        gravity=981,
+        damping=0.8,
         frequency=60,
         max_steps=MAX_STEPS,
     ):
         self.space = pymunk.Space()
-        self.space.damping = 0.8
+        self.space.damping = damping
+        self.space.gravity = (0, gravity)
 
         self.cart_body = pymunk.Body(cart_mass, float("inf"))
         self.cart_body.position = (0, 0)
@@ -27,8 +29,6 @@ class Simulation:
 
         self.space.add(self.cart_body)
 
-        self.gravity = gravity
-        self.space.gravity = self.gravity
         self.frequency = frequency
         self.dt = 1.0 / frequency
         self.max_steps = max_steps
