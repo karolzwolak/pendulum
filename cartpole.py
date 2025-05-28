@@ -15,6 +15,11 @@ class CartPoleSimulation(Simulation):
         cart_mass=1,
         initial_angle=0,
         max_steps=simulation.MAX_STEPS,
+        gravity_curriculum=(0, 981),
+        damping_curriculum=(0.25, 0.8),
+        curriculum_reward_threshold=70,
+        curriculum_steps=100,
+        use_curriculum_learning=False,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
         self.obs_size = 6  # [cart_x, cart_velocity_x, angle_mid, angle_tip, angular_velocity_mid, angular_velocity_tip]
@@ -53,8 +58,49 @@ class CartPoleSimulation(Simulation):
 
         self.total_reward = 0
 
+        self.curriculum_reward_threshold = curriculum_reward_threshold
+        self.gravity_curriculum = gravity_curriculum
+        self.damping_curriculum = damping_curriculum
+        self.curriculum_steps = curriculum_steps
+        self.curriculum_curr_step = 0
+        self.use_curriculum_learning = use_curriculum_learning
+
+        if self.use_curriculum_learning:
+            self.update_curriculum_values()
+
         self.initial_angle = initial_angle
         self.reset()
+
+    @staticmethod
+    def interpolate_curriculum(start, end, t):
+        """
+        Interpolates between start and end values based on t (0 to 1).
+        """
+        # linear interpolation
+        return start + (end - start) * t
+
+    def update_curriculum(self, reward):
+        if (
+            not self.use_curriculum_learning
+            or reward < self.curriculum_reward_threshold
+        ):
+            return
+        self.curriculum_curr_step += 1
+        self.update_curriculum_values()
+
+    def update_curriculum_values(self):
+        t = self.curriculum_curr_step / self.curriculum_steps
+        gravity = self.interpolate_curriculum(
+            self.gravity_curriculum[0], self.gravity_curriculum[1], t
+        )
+        self.space.gravity = (0, gravity)
+        damping = self.interpolate_curriculum(
+            self.damping_curriculum[0], self.damping_curriculum[1], t
+        )
+        self.space.damping = damping
+        print(
+            f"Curriculum step {self.curriculum_curr_step}/{self.curriculum_steps}; gravity={gravity}, damping={damping}"
+        )
 
     def step(self, force=0):
         self.mid_joint.step()
@@ -69,6 +115,7 @@ class CartPoleSimulation(Simulation):
         super().reset()
         self.mid_joint.reset(angle)
         self.tip_joint.reset(angle)
+        self.update_curriculum(self.total_reward)
         self.total_reward = 0
 
     def state(self):
