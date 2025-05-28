@@ -17,7 +17,7 @@ class CartPoleSimulation(Simulation):
         max_steps=simulation.MAX_STEPS,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
-        self.obs_size = 4  # [angle, angular_velocity, cart_x, cart_velocity_x]
+        self.obs_size = 6  # [cart_x, cart_velocity_x, angle_mid, angle_tip, angular_velocity_mid, angular_velocity_tip]
         self.initial_angle = initial_angle
 
         self.mid_body = pymunk.Body(
@@ -71,19 +71,15 @@ class CartPoleSimulation(Simulation):
         self.tip_joint.reset(angle)
         self.total_reward = 0
 
-    def angle(self):
-        return self.mid_joint.relative_angle()
-
-    def angular_velocity(self):
-        return self.mid_joint.relative_angular_velocity()
-
     def state(self):
         return np.array(
             [
-                self.angle(),
-                self.angular_velocity(),
                 self.cart_x(),
                 self.cart_velocity_x(),
+                self.mid_joint.relative_angle(),
+                self.tip_joint.relative_angle(),
+                self.mid_joint.relative_angular_velocity(),
+                self.tip_joint.relative_angular_velocity(),
             ],
             dtype=np.float32,
         )
