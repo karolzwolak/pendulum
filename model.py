@@ -3,6 +3,7 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, VecNormalize, DummyV
 from stable_baselines3.common.env_util import make_vec_env
 from cartpole import CartPoleSimulation
 from simulation import MAX_STEPS
+import torch as th
 from env import Env
 
 NUM_ENVS = 32
@@ -16,7 +17,7 @@ def linear_schedule(initial_value):
 
 
 def create_model(env):
-    policy_kwargs = dict(net_arch=[16, 8])
+    policy_kwargs = dict(net_arch=[16, 8], activation_fn=th.nn.Tanh)
     return PPO(
         "MlpPolicy",
         env,
