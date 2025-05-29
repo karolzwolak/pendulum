@@ -14,7 +14,7 @@ def main():
 
     try:
         model.learn(
-            total_timesteps=10_000_000,
+            total_timesteps=int(1e10),
             callback=CurriculumLearningCallback(),
         )
     except KeyboardInterrupt:
