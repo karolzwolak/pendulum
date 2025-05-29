@@ -10,7 +10,7 @@ class CurriculumLearningCallback(BaseCallback):
         self,
         stop_traning_reward_threshold: float = 70,
         progress_curriculum_theshold: float = 70,
-        curriculum_steps: int = 100,
+        curriculum_steps: int = 1000,
         n_episodes: int = 10,
         verbose=0,
     ):
