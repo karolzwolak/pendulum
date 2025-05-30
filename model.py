@@ -11,7 +11,7 @@ from cartpole import CartPoleSimulation
 from env import Env
 from simulation import MAX_STEPS
 
-NUM_ENVS = 32
+NUM_ENVS = 16
 
 
 class CurriculumLearningCallback(BaseCallback):
