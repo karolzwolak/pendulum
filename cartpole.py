@@ -17,6 +17,7 @@ class CartPoleSimulation(Simulation):
         max_steps=simulation.MAX_STEPS,
         gravity_curriculum=(1, 981),
         damping_curriculum=(0.1, 0.8),
+        initial_curriculum_progress=1,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
         self.obs_size = 6  # [cart_x, cart_velocity_x, angle_mid, angle_tip, angular_velocity_mid, angular_velocity_tip]
@@ -57,6 +58,7 @@ class CartPoleSimulation(Simulation):
 
         self.gravity_curriculum = gravity_curriculum
         self.damping_curriculum = damping_curriculum
+        self.progress_curriculum(initial_curriculum_progress)
 
         self.initial_angle = initial_angle
         self.reset()
