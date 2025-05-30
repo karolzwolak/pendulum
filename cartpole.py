@@ -126,7 +126,7 @@ class CartPoleSimulation(Simulation):
 
         # we apply a penalty only if the pendulum is upright
         # we don't want to discourage exploration
-        if upright_bonus < penalty_threshold:
+        if upright < penalty_threshold:
             return upright_bonus
 
         position_penalty = -4 * ((abs(cart_x) / simulation.WORLD_SIZE) ** 2)
