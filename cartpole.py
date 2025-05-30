@@ -110,22 +110,19 @@ class CartPoleSimulation(Simulation):
         )
 
     @staticmethod
-    def shaped_upright_reward(upright_mid: float, upright_tip) -> float:
+    def shaped_upright_reward(upright: float) -> float:
         """
         Maps upright ∈ [-1, 1] to a reward ∈ [0, 10].
         Quadratic shape: 10 when upright, 0 when hanging.
         """
-        upright = (upright_mid + upright_tip) / 2  # average of mid and tip angles
         # Map -1..1 → 0..1, then square for curvature
         normalized = (upright + 1) / 2  # -1 → 0, 0 → 0.5, 1 → 1
         reward = 10 * (normalized**2)  # steeper near upright
         return reward
 
     @staticmethod
-    def reward(upright_mid, upright_tip, cart_x, penalty_threshold=0.7):
-        upright_bonus = CartPoleSimulation.shaped_upright_reward(
-            upright_mid, upright_tip
-        )
+    def reward(upright, cart_x, penalty_threshold=0.7):
+        upright_bonus = CartPoleSimulation.shaped_upright_reward(upright)
 
         # we apply a penalty only if the pendulum is upright
         # we don't want to discourage exploration
@@ -137,9 +134,9 @@ class CartPoleSimulation(Simulation):
         return upright_bonus + position_penalty
 
     def compute_reward(self):
+        upright = -self.tip_body.position.y / 2 / self.tip_joint.length
         reward = self.reward(
-            self.mid_joint.upright(),
-            self.tip_joint.upright(),
+            upright,
             self.cart_x(),
         )
         return reward / self.max_step_reward
