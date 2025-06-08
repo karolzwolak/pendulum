@@ -20,7 +20,6 @@ class CartPoleSimulation(Simulation):
         initial_curriculum_progress=1,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
-        self.obs_size = 10
 
         self.mid_body = pymunk.Body(
             satellite_mass,
@@ -56,6 +55,7 @@ class CartPoleSimulation(Simulation):
         self.initial_upright_curriculum = initial_upright_upright
         self.progress_curriculum(initial_curriculum_progress)
 
+        self.obs_size = np.size(self.state())
         self.reset()
 
     @staticmethod
