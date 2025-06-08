@@ -122,7 +122,7 @@ class CartPoleSimulation(Simulation):
         return reward
 
     @staticmethod
-    def reward(upright, cart_x, penalty_threshold=0.7):
+    def reward(upright, cart_x, penalty_threshold=0.9):
         upright_bonus = CartPoleSimulation.shaped_upright_reward(upright)
 
         # we apply a penalty only if the pendulum is upright
