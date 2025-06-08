@@ -13,24 +13,21 @@ class CartPoleSimulation(Simulation):
         arm_length=20,
         satellite_mass=0.1,
         cart_mass=1,
-        initial_angle=0,
         max_steps=simulation.MAX_STEPS,
         gravity_curriculum=(1, 981),
         damping_curriculum=(0.1, 0.8),
+        initial_upright_upright=(1, -1),
         initial_curriculum_progress=1,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
         self.obs_size = 6  # [cart_x, cart_velocity_x, angle_mid, angle_tip, angular_velocity_mid, angular_velocity_tip]
-        self.initial_angle = initial_angle
 
         self.mid_body = pymunk.Body(
             satellite_mass,
             float("inf"),
         )
 
-        self.mid_joint = SatelliteJoint(
-            self.cart_body, self.mid_body, arm_length, initial_angle
-        )
+        self.mid_joint = SatelliteJoint(self.cart_body, self.mid_body, arm_length, 0)
 
         self.space.add(self.mid_body)
         self.mid_joint.add_to_space(self.space)
@@ -40,9 +37,7 @@ class CartPoleSimulation(Simulation):
             float("inf"),
         )
 
-        self.tip_joint = SatelliteJoint(
-            self.mid_body, self.tip_body, arm_length, initial_angle
-        )
+        self.tip_joint = SatelliteJoint(self.mid_body, self.tip_body, arm_length, 0)
 
         self.space.add(self.tip_body)
         self.tip_joint.add_to_space(self.space)
@@ -58,9 +53,9 @@ class CartPoleSimulation(Simulation):
 
         self.gravity_curriculum = gravity_curriculum
         self.damping_curriculum = damping_curriculum
+        self.initial_upright_curriculum = initial_upright_upright
         self.progress_curriculum(initial_curriculum_progress)
 
-        self.initial_angle = initial_angle
         self.reset()
 
     @staticmethod
@@ -80,6 +75,11 @@ class CartPoleSimulation(Simulation):
             self.damping_curriculum[0], self.damping_curriculum[1], t
         )
         self.space.damping = damping
+        self.initial_upright = self.interpolate_curriculum(
+            self.initial_upright_curriculum[0],
+            self.initial_upright_curriculum[1],
+            t,
+        )
 
     def step(self, force=0):
         self.mid_joint.step()
@@ -90,7 +90,8 @@ class CartPoleSimulation(Simulation):
 
     def reset(self, angle=None):
         if angle is None:
-            angle = self.initial_angle
+            sign = 1 if np.random.rand() < 0.5 else -1
+            angle = sign * np.arccos(-self.initial_upright)
         super().reset()
         self.mid_joint.reset(angle)
         self.tip_joint.reset(angle)
