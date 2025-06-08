@@ -116,7 +116,6 @@ class CartPoleSimulation(Simulation):
                 ),
                 mid_angular_velocity,
                 tip_angular_velocity,
-                mid_angular_velocity * tip_angular_velocity,
             ],
             dtype=np.float32,
         )
