@@ -20,7 +20,7 @@ class CartPoleSimulation(Simulation):
         initial_curriculum_progress=1,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
-        self.obs_size = 11
+        self.obs_size = 10
 
         self.mid_body = pymunk.Body(
             satellite_mass,
@@ -117,7 +117,6 @@ class CartPoleSimulation(Simulation):
                 mid_angular_velocity,
                 tip_angular_velocity,
                 mid_angular_velocity * tip_angular_velocity,
-                self.upright(),
             ],
             dtype=np.float32,
         )
@@ -146,12 +145,13 @@ class CartPoleSimulation(Simulation):
 
         return upright_bonus + position_penalty
 
-    def upright(self):
-        return -self.tip_body.position.y / 2 / self.tip_joint.length
-
     def compute_reward(self):
+        upright_mid = self.mid_joint.upright()
+        upright_tip = self.tip_joint.upright()
+        upright = (upright_mid + upright_tip) / 2
+
         reward = self.reward(
-            self.upright(),
+            upright,
             self.cart_x(),
         )
         return reward / self.max_step_reward
