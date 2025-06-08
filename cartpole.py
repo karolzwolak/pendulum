@@ -20,7 +20,7 @@ class CartPoleSimulation(Simulation):
         initial_curriculum_progress=1,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
-        self.obs_size = 6  # [cart_x, cart_velocity_x, angle_mid, angle_tip, angular_velocity_mid, angular_velocity_tip]
+        self.obs_size = 8
 
         self.mid_body = pymunk.Body(
             satellite_mass,
@@ -102,8 +102,10 @@ class CartPoleSimulation(Simulation):
             [
                 self.cart_x(),
                 self.cart_velocity_x(),
-                self.mid_joint.relative_angle(),
-                self.tip_joint.relative_angle(),
+                np.sin(self.mid_joint.relative_angle()),
+                np.cos(self.mid_joint.relative_angle()),
+                np.sin(self.tip_joint.relative_angle()),
+                np.cos(self.tip_joint.relative_angle()),
                 self.mid_joint.relative_angular_velocity(),
                 self.tip_joint.relative_angular_velocity(),
             ],
