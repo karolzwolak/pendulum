@@ -10,8 +10,8 @@ import simulation
 class CartPoleSimulation(Simulation):
     def __init__(
         self,
-        arm_length=20,
-        satellite_mass=0.001,
+        arm_length=30,
+        satellite_mass=0.05,
         cart_mass=1,
         max_steps=simulation.MAX_STEPS,
         gravity_curriculum=(1, 981),
