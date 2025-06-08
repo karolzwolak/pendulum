@@ -16,7 +16,7 @@ class CartPoleSimulation(Simulation):
         max_steps=simulation.MAX_STEPS,
         gravity_curriculum=(1, 981),
         damping_curriculum=(0.1, 0.8),
-        initial_upright_upright=(1, -1),
+        initial_upright_upright=(0.99, -0.99),
         initial_curriculum_progress=1,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
