@@ -90,7 +90,7 @@ def linear_schedule(initial_value):
 
 
 def create_model(env):
-    policy_kwargs = dict(net_arch=[64, 64], activation_fn=th.nn.LeakyReLU)
+    policy_kwargs = dict(net_arch=[128, 128], activation_fn=th.nn.LeakyReLU)
     return PPO(
         "MlpPolicy",
         env,
