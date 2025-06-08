@@ -20,7 +20,7 @@ class CurriculumLearningCallback(BaseCallback):
         stop_traning_reward_threshold: float = 80,
         progress_curriculum_theshold: float = 80,
         curriculum_steps: int = 20,
-        n_episodes: int = 1,
+        n_episodes: int = 2,
         verbose=0,
     ):
         super().__init__(verbose)
