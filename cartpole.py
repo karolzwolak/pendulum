@@ -20,7 +20,7 @@ class CartPoleSimulation(Simulation):
         initial_curriculum_progress=1,
     ):
         super().__init__(cart_mass=cart_mass, max_steps=max_steps)
-        self.obs_size = 8
+        self.obs_size = 11
 
         self.mid_body = pymunk.Body(
             satellite_mass,
@@ -98,16 +98,26 @@ class CartPoleSimulation(Simulation):
         self.total_reward = 0
 
     def state(self):
+        mid_angle = self.mid_joint.relative_angle()
+        tip_angle = self.tip_joint.relative_angle()
+        mid_angular_velocity = self.mid_joint.relative_angular_velocity()
+        tip_angular_velocity = self.tip_joint.relative_angular_velocity()
         return np.array(
             [
                 self.cart_x(),
                 self.cart_velocity_x(),
-                np.sin(self.mid_joint.relative_angle()),
-                np.cos(self.mid_joint.relative_angle()),
-                np.sin(self.tip_joint.relative_angle()),
-                np.cos(self.tip_joint.relative_angle()),
-                self.mid_joint.relative_angular_velocity(),
-                self.tip_joint.relative_angular_velocity(),
+                np.sin(mid_angle),
+                np.cos(mid_angle),
+                np.sin(tip_angle),
+                np.cos(tip_angle),
+                np.dot(
+                    mid_angle,
+                    tip_angle,
+                ),
+                mid_angular_velocity,
+                tip_angular_velocity,
+                mid_angular_velocity * tip_angular_velocity,
+                self.upright(),
             ],
             dtype=np.float32,
         )
@@ -136,10 +146,12 @@ class CartPoleSimulation(Simulation):
 
         return upright_bonus + position_penalty
 
+    def upright(self):
+        return -self.tip_body.position.y / 2 / self.tip_joint.length
+
     def compute_reward(self):
-        upright = -self.tip_body.position.y / 2 / self.tip_joint.length
         reward = self.reward(
-            upright,
+            self.upright(),
             self.cart_x(),
         )
         return reward / self.max_step_reward
