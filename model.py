@@ -20,14 +20,14 @@ class CurriculumLearningCallback(BaseCallback):
         stop_traning_reward_threshold: float = 80,
         progress_curriculum_theshold: float = 80,
         curriculum_steps: int = 6,
-        n_episodes: int = 5,
+        n_episodes: int = 2,
         verbose=0,
     ):
         super().__init__(verbose)
         self.stop_traning_reward_threshold = stop_traning_reward_threshold
         self.progress_curriculum_reward_threshold = progress_curriculum_theshold
-        self.n_episodes = n_episodes
-        self.episode_rewards = deque(maxlen=n_episodes)
+        self.n_episodes = n_episodes * NUM_ENVS
+        self.episode_rewards = deque(maxlen=self.n_episodes)
         self.curriculum_steps = curriculum_steps
         self.curriculum_step = 0
 
