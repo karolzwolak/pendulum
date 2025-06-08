@@ -1,7 +1,7 @@
 import pymunk
 
 WORLD_SIZE = 100
-MAX_STEPS = 800
+MAX_STEPS = 200
 
 
 class Simulation:
