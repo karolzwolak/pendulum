@@ -116,6 +116,7 @@ class CartPoleSimulation(Simulation):
                 ),
                 mid_angular_velocity,
                 tip_angular_velocity,
+                self.upright(),
             ],
             dtype=np.float32,
         )
@@ -144,13 +145,12 @@ class CartPoleSimulation(Simulation):
 
         return upright_bonus + position_penalty
 
-    def compute_reward(self):
-        upright_mid = self.mid_joint.upright()
-        upright_tip = self.tip_joint.upright()
-        upright = (upright_mid + upright_tip) / 2
+    def upright(self):
+        return -self.tip_body.position.y / 2 / self.tip_joint.length
 
+    def compute_reward(self):
         reward = self.reward(
-            upright,
+            self.upright(),
             self.cart_x(),
         )
         return reward / self.max_step_reward
