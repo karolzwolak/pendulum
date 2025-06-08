@@ -104,7 +104,6 @@ def create_model(env):
         gamma=0.98,
         gae_lambda=0.95,
         ent_coef=0.01,
-        clip_range=0.1,
     )
 
 
