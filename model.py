@@ -18,8 +18,8 @@ NUM_ENVS = 16
 class CurriculumLearningCallback(BaseCallback):
     def __init__(
         self,
-        stop_traning_reward_threshold: float = 80,
-        progress_curriculum_theshold: float = 80,
+        stop_traning_reward_threshold: float = 75,
+        progress_curriculum_theshold: float = 75,
         curriculum_steps: int = 20,
         n_episodes: int = 4,
         verbose=0,

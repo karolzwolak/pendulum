@@ -29,6 +29,8 @@ class Env(gym.Env):
             "r": self.sim.total_reward,
         }
 
+        # clip reward to [-1, 1] for stability
+        reward = np.clip(reward, -1.0, 1.0)
         return np.array(obs, dtype=np.float32), reward, done, False, info
 
     def state(self):

@@ -124,7 +124,7 @@ class CartPoleSimulation(Simulation):
         """
         # Map -1..1 → 0..1, then square for curvature
         normalized = (upright + 1) / 2  # -1 → 0, 0 → 0.5, 1 → 1
-        reward = 10 * (normalized**2)  # steeper near upright
+        reward = 10 * (normalized**3)  # steeper near upright
         return reward
 
     @staticmethod
@@ -144,8 +144,11 @@ class CartPoleSimulation(Simulation):
         return -self.tip_body.position.y / 2 / self.tip_joint.length
 
     def compute_reward(self):
-        reward = self.reward(
+        upright_reward = self.reward(
             self.upright(),
             self.cart_x(),
         )
-        return reward / self.max_step_reward
+        # penalty for cart velocity to encourage stability
+        velocity_penalty = -0.1 * abs(self.cart_velocity_x()) / simulation.WORLD_SIZE
+        total_reward = upright_reward + velocity_penalty
+        return total_reward / self.max_step_reward
