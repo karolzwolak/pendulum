@@ -4,6 +4,7 @@ import torch as th
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecNormalize
 from tqdm import tqdm
 
@@ -117,7 +118,7 @@ def save_model(model, env, path="models/cartpole"):
 def make_parallel_envs(num_envs=NUM_ENVS):
     """Create multiple parallel environments for faster sampling"""
     return make_vec_env(
-        lambda: Env(CartPoleSimulation()),
+        lambda: Monitor(Env(CartPoleSimulation())),
         n_envs=num_envs,
         vec_env_cls=SubprocVecEnv,
     )
