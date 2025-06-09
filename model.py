@@ -19,8 +19,8 @@ class CurriculumLearningCallback(BaseCallback):
         self,
         stop_traning_reward_threshold: float = 80,
         progress_curriculum_theshold: float = 80,
-        curriculum_steps: int = 6,
-        n_episodes: int = 5,
+        curriculum_steps: int = 20,
+        n_episodes: int = 4,
         verbose=0,
     ):
         super().__init__(verbose)
@@ -140,8 +140,5 @@ def load_model(path, sim=CartPoleSimulation):
     sim = sim()
     vec_env = DummyVecEnv([lambda: Env(sim)])
     eval_env = VecNormalize.load(f"{path}_vec_normalize.pkl", vec_env)
-
-    eval_env.training = False
-    eval_env.norm_reward = False
 
     return sim, eval_env, PPO.load(f"{path}.zip", env=eval_env, device="cpu")
