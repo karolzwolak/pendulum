@@ -104,19 +104,14 @@ class CartPoleSimulation(Simulation):
         tip_angular_velocity = self.tip_joint.relative_angular_velocity()
         return np.array(
             [
-                self.cart_x(),
-                self.cart_velocity_x(),
+                self.cart_x() / simulation.WORLD_SIZE,
+                self.cart_velocity_x() / simulation.WORLD_SIZE,
                 np.sin(mid_angle),
                 np.cos(mid_angle),
                 np.sin(tip_angle),
                 np.cos(tip_angle),
-                np.dot(
-                    mid_angle,
-                    tip_angle,
-                ),
                 mid_angular_velocity,
                 tip_angular_velocity,
-                self.upright(),
             ],
             dtype=np.float32,
         )
