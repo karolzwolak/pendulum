@@ -102,7 +102,7 @@ def create_model(env):
         batch_size=NUM_ENVS * MAX_STEPS,
         n_epochs=20,
         learning_rate=5e-3,
-        gamma=0.98,
+        gamma=0.99,
         gae_lambda=0.95,
         ent_coef=0.01,
     )
