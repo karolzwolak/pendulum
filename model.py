@@ -20,7 +20,7 @@ class CurriculumLearningCallback(BaseCallback):
         stop_traning_reward_threshold: float = 80,
         progress_curriculum_theshold: float = 80,
         curriculum_steps: int = 6,
-        n_episodes: int = 2,
+        n_episodes: int = 5,
         verbose=0,
     ):
         super().__init__(verbose)
@@ -90,7 +90,7 @@ def linear_schedule(initial_value):
 
 
 def create_model(env):
-    policy_kwargs = dict(net_arch=[64, 32], activation_fn=th.nn.LeakyReLU)
+    policy_kwargs = dict(net_arch=[64, 64], activation_fn=th.nn.LeakyReLU)
     return PPO(
         "MlpPolicy",
         env,
@@ -100,7 +100,7 @@ def create_model(env):
         n_steps=MAX_STEPS,
         batch_size=NUM_ENVS * MAX_STEPS,
         n_epochs=20,
-        learning_rate=1e-3,
+        learning_rate=5e-3,
         gamma=0.98,
         gae_lambda=0.95,
         ent_coef=0.01,
