@@ -124,7 +124,7 @@ class CartPoleSimulation(Simulation):
         """
         # Map -1..1 → 0..1, then square for curvature
         normalized = (upright + 1) / 2  # -1 → 0, 0 → 0.5, 1 → 1
-        reward = 10 * (normalized**2)  # steeper near upright
+        reward = 10 * (normalized**4)  # steeper near upright
         return reward
 
     @staticmethod
